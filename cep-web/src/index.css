@@ -20,9 +20,10 @@ html.lenis body {
 @layer base {
   html {
     font-size: 17px;
+    @apply font-sans;
   }
   body {
-    @apply bg-paper font-sans text-ink antialiased;
+    @apply font-sans antialiased bg-paper text-ink;
     /* architectural drafting grid */
     background-image:
       linear-gradient(to right, rgba(229, 227, 220, 0.55) 1px, transparent 1px),

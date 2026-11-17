@@ -13,6 +13,7 @@ import {
   type Scene,
 } from '../content';
 import { CountUp, EASE, Figure, Reveal, Section, cx } from '../components/ui';
+import { ContainerScroll } from '../components/ui/container-scroll-animation';
 
 export default function Section1({ scene }: { scene: Scene }) {
   return (
@@ -30,39 +31,63 @@ export default function Section1({ scene }: { scene: Scene }) {
 /* ================= Cover ================= */
 
 function Cover() {
-  return (
-    <div className="grid grid-cols-12 gap-5">
-      <Reveal className="col-span-12 flex flex-col justify-between border border-rule bg-card p-8 lg:col-span-8">
-        <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-          <span className="th-label text-muted">{PROJECT.program}</span>
-          <span className="text-rule-strong">/</span>
-          <span className="th-label text-rust">{PROJECT.community}</span>
-        </div>
-        <h1 className="mt-8 text-[2.15rem] font-semibold leading-[1.35] tracking-[-0.01em] text-ink">
-          {PROJECT.title}
-        </h1>
-        <div className="mt-10 flex items-center gap-4 border-t border-rule pt-4">
-          <span className="mono-label text-faint">Institution</span>
-          <span className="text-[15px] text-ink">{PROJECT.school}</span>
-        </div>
-      </Reveal>
-
-      <Reveal delay={0.1} className="col-span-12 border border-rule bg-card p-8 lg:col-span-4">
-        <div className="th-label text-faint">คณะผู้จัดทำ</div>
-        <ol className="mt-5 space-y-2.5">
-          {PROJECT.team.map((name, i) => (
-            <li key={name} className="flex items-baseline gap-4 border-b border-rule pb-2.5 last:border-b-0">
-              <span className="font-mono text-[11px] text-faint">{String(i + 1).padStart(2, '0')}</span>
-              <span className="text-[15px]">{name}</span>
-            </li>
-          ))}
-        </ol>
-        <div className="mt-6 border-t border-ink pt-4">
-          <div className="th-label text-faint">ครูที่ปรึกษาโครงการ</div>
-          <div className="mt-2 text-[15px]">{PROJECT.advisor}</div>
-        </div>
-      </Reveal>
+  const titleComponent = (
+    <div className="mb-8 space-y-4">
+      <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+        <span className="th-label text-muted">{PROJECT.program}</span>
+        <span className="text-rule-strong">/</span>
+        <span className="th-label text-rust">{PROJECT.community}</span>
+      </div>
+      <h1 className="mx-auto max-w-4xl text-[1.8rem] font-semibold leading-[1.4] tracking-[-0.01em] text-ink md:text-[2.4rem]">
+        {PROJECT.title}
+      </h1>
+      <p className="mono-label text-faint">{PROJECT.school}</p>
     </div>
+  );
+
+  return (
+    <ContainerScroll titleComponent={titleComponent}>
+      {/* inside the scroll-card: team + quick-stats */}
+      <div className="flex h-full flex-col justify-between p-6 md:p-10">
+        {/* header row */}
+        <div className="flex items-start justify-between gap-6">
+          <div>
+            <div className="mono-label text-rust">SEC. 01</div>
+            <div className="mt-1 th-label text-faint">วิเคราะห์ต้นตอปัญหา</div>
+          </div>
+          <div className="flex h-8 w-8 items-center justify-center border border-rule">
+            <span className="mono-label text-[9px] leading-none text-faint">CEP</span>
+          </div>
+        </div>
+
+        {/* key stats */}
+        <div className="grid grid-cols-3 gap-4">
+          {STATS.map((s) => (
+            <div key={s.code} className="border border-rule bg-paper/60 p-4">
+              <div className="mono-label text-rust">{s.code}</div>
+              <div className="mt-3 flex items-baseline gap-1">
+                {s.prefix ? <span className="text-lg text-muted">{s.prefix}</span> : null}
+                <span className="text-[2rem] font-semibold leading-none tabular-nums text-ink">
+                  {s.value.toLocaleString('th-TH')}
+                </span>
+                <span className="ml-0.5 text-sm text-muted">{s.unit}</span>
+              </div>
+              <p className="mt-2 text-[12px] leading-relaxed text-muted line-clamp-2">{s.label}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* team footer */}
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-1 border-t border-rule pt-4">
+          <span className="mono-label text-faint">Research Team</span>
+          {PROJECT.team.map((name) => (
+            <span key={name} className="text-[13px] text-ink">
+              {name}
+            </span>
+          ))}
+        </div>
+      </div>
+    </ContainerScroll>
   );
 }
 
