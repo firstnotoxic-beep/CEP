@@ -1,18 +1,14 @@
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FUNDING, KPIS, PEOPLE, SECTION4_LEAD, STEWARDS, type Scene } from '../content';
-import { EASE, Figure, Reveal, Section, cx } from '../components/ui';
+import { EASE, Figure, Lead, Reveal, Section, cx } from '../components/ui';
 
 export default function Section4({ scene }: { scene: Scene }) {
   return (
     <Section scene={scene}>
-      <Reveal className="grid grid-cols-12 gap-5">
-        <div className="col-span-12 lg:col-span-3">
-          <div className="mono-label text-faint">4.1</div>
-          <h2 className="mt-2 text-2xl font-semibold">ความยั่งยืน</h2>
-        </div>
-        <p className="col-span-12 text-[1.2rem] leading-[1.9] lg:col-span-9">{SECTION4_LEAD}</p>
-      </Reveal>
+      <Lead num="4.1" title="ให้ชุมชนเดินต่อเองได้">
+        {SECTION4_LEAD}
+      </Lead>
 
       <Reveal className="mt-10">
         <KpiPanel />
@@ -53,8 +49,8 @@ function KpiPanel() {
               onClick={() => setActive(i)}
               onMouseEnter={() => setActive(i)}
               className={cx(
-                'flex min-h-[176px] flex-col border p-4 text-left transition-colors duration-300',
-                on ? 'border-ink bg-card' : 'border-rule bg-paper hover:border-rule-strong',
+                'flex min-h-[176px] flex-col rounded-xl p-4 text-left ring-1 transition-all duration-300',
+                on ? 'bg-white shadow-[0_10px_30px_-14px_rgba(20,22,21,0.3)] ring-stone-900/15' : 'bg-stone-50 ring-stone-900/[0.05] hover:ring-stone-900/15',
               )}
             >
               <div className="flex items-center justify-between">
@@ -117,8 +113,7 @@ function HandoverModel() {
   return (
     <Figure code="FIG. 4.2" title="โมเดลส่งมอบให้ชุมชนดูแลต่อ" className="h-full">
       <div className="relative">
-        <div className="mx-auto w-fit border border-ink bg-ink px-5 py-3 text-center text-paper">
-          <span className="mono-label block text-paper/70">System</span>
+        <div className="mx-auto w-fit rounded-xl bg-stone-800 px-5 py-3 text-center text-white shadow-md">
           <span className="text-[15px] font-semibold">ถังพัก · คอกหมัก · แปลงทดลอง</span>
         </div>
 
@@ -149,7 +144,7 @@ function HandoverModel() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, ease: EASE, delay: 0.5 + i * 0.1 }}
-              className="flex flex-col border border-rule bg-paper p-4"
+              className="flex flex-col rounded-xl bg-stone-50 p-4 ring-1 ring-stone-900/[0.05]"
             >
               <span className="th-label text-faint">{s.group}</span>
               <span className="mt-1 text-[17px] font-semibold">{PEOPLE[s.person].name}</span>
@@ -179,13 +174,13 @@ function FundingModel() {
       <div className="grid grid-cols-12 gap-4">
         {/* phases */}
         <ol className="col-span-12 space-y-3 sm:col-span-4">
-          <li className="border border-rule bg-paper p-4">
+          <li className="rounded-xl bg-stone-50 p-4 ring-1 ring-stone-900/[0.05]">
             <span className="mono-label text-faint">Phase A</span>
             <div className="mt-1 text-[1.15rem] font-semibold">{FUNDING.phaseA.when}</div>
             <div className="mt-0.5 text-[15px] text-muted">{FUNDING.phaseA.what}</div>
           </li>
           <li className="text-center text-faint">↓</li>
-          <li className="border border-olive bg-[#EEF0E6] p-4">
+          <li className="rounded-xl bg-[#EEF0E6] p-4 ring-1 ring-olive/20">
             <span className="mono-label text-olive">Phase B</span>
             <div className="mt-1 text-[1.15rem] font-semibold">{FUNDING.phaseB.when}</div>
             <div className="mt-0.5 text-[15px] text-muted">{FUNDING.phaseB.what}</div>
@@ -211,7 +206,15 @@ function FundingModel() {
             </text>
             {nodes.map((nd, i) => (
               <g key={nd.label}>
-                <rect x={nd.x - 62} y={nd.y - 16} width={124} height={32} fill={i === 1 ? '#55603A' : '#FFFFFF'} stroke={i === 1 ? '#55603A' : '#141615'} />
+                <rect
+                  x={nd.x - 62}
+                  y={nd.y - 16}
+                  width={124}
+                  height={32}
+                  rx={16}
+                  fill={i === 1 ? '#55603A' : '#FFFFFF'}
+                  stroke={i === 1 ? '#55603A' : 'rgba(20,22,21,0.18)'}
+                />
                 <text
                   x={nd.x}
                   y={nd.y}

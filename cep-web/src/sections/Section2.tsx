@@ -2,7 +2,7 @@ import { Suspense, lazy, useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useInView } from 'framer-motion';
 import { CONCEPT, COCREATION_STEPS, FIT_REASONS, PEOPLE, SOLUTION_STEPS, type Scene, type SolutionStep } from '../content';
 import type { ModelId } from '../components/Cutaway3D';
-import { EASE, Figure, Reveal, Section, cx } from '../components/ui';
+import { BTN_GHOST, BTN_SOLID, EASE, Figure, INSET, Lead, PillTabs, Reveal, Section, SourceTag, cx } from '../components/ui';
 
 const Cutaway3D = lazy(() => import('../components/Cutaway3D'));
 
@@ -12,13 +12,9 @@ export default function Section2({ scene }: { scene: Scene }) {
 
   return (
     <Section scene={scene}>
-      <Reveal className="grid grid-cols-12 gap-5">
-        <div className="col-span-12 lg:col-span-3">
-          <div className="mono-label text-faint">2.1</div>
-          <h2 className="mt-2 text-2xl font-semibold">แนวคิด</h2>
-        </div>
-        <p className="col-span-12 text-[1.2rem] leading-[1.9] lg:col-span-9">{CONCEPT}</p>
-      </Reveal>
+      <Lead num="2.1" title="แนวคิด">
+        {CONCEPT}
+      </Lead>
 
       <div className="mt-10 grid grid-cols-12 gap-8">
         {/* left: scrolling explanation */}
@@ -34,10 +30,9 @@ export default function Section2({ scene }: { scene: Scene }) {
           ))}
         </div>
 
-        {/* right: sticky 3D stage */}
+        {/* right: sticky 3D stage — ends above the floating dock */}
         <div className="col-span-12 lg:col-span-7">
-          {/* ends above the fixed presenter bar (~112px) so it never covers the legend */}
-          <div className="sticky top-6 h-[calc(100vh-9.5rem)] min-h-[440px]">
+          <div className="sticky top-6 h-[calc(100vh-6.5rem)] min-h-[440px]">
             <Stage model={model} exploded={exploded} onModel={setModel} onExplode={() => setExploded((e) => !e)} />
           </div>
         </div>
@@ -66,43 +61,42 @@ function StepBlock({ step, index, active, onEnter }: {
 
   return (
     <div ref={ref} className="flex min-h-[88vh] items-center py-10">
-      <div
-        className={cx(
-          'border-l-2 pl-6 transition-opacity duration-500',
-          active ? 'border-rust opacity-100' : 'border-rule opacity-45',
-        )}
-      >
+      <div className={cx('border-l-2 pl-6 transition-all duration-500', active ? 'border-rust opacity-100' : 'border-stone-200 opacity-45')}>
         <div className="flex items-baseline gap-3">
           <span className="mono-label text-rust">{step.fig}</span>
-          <span className="mono-label text-faint">Step {index + 1} / 3</span>
+          <span className="mono-label text-faint">
+            {index + 1} / {SOLUTION_STEPS.length}
+          </span>
         </div>
         <h3 className="mt-3 text-[1.45rem] font-semibold leading-snug">{step.title}</h3>
 
-        <div className="mt-6 border border-rule bg-card p-5">
-          <div className="th-label text-faint">ข้อเสนอในใบสมัคร</div>
-          <p className="mt-2 text-[15px] leading-[1.85] text-ink">{step.proposal}</p>
+        <div className="mt-5">
+          <SourceTag kind="proposal" />
+          <p className="mt-2 text-[16.5px] leading-[1.8] text-ink">{step.lead}</p>
         </div>
 
-        <div className="th-label mt-6 text-faint">หลักการทางวิทยาศาสตร์</div>
-        <ol className="mt-3 space-y-3">
-          {step.science.map((s, i) => (
-            <li key={s} className="grid grid-cols-[2rem_1fr] gap-2 text-[15px] leading-relaxed text-muted">
-              <span className="font-mono text-xs leading-7 text-faint">{String(i + 1).padStart(2, '0')}</span>
-              <span>{s}</span>
-            </li>
-          ))}
-        </ol>
+        <div className="mt-6">
+          <SourceTag kind="science" />
+          <ul className="mt-3 space-y-2.5">
+            {step.science.map((s) => (
+              <li key={s} className="flex gap-3 text-[15px] leading-relaxed text-muted">
+                <span className="mt-[11px] h-1 w-1 shrink-0 rounded-full bg-stone-400" />
+                <span>{s}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
 
         {step.note ? (
-          <div className="mt-6 border border-olive/40 bg-paper p-4">
-            <div className="th-label text-olive">เงื่อนไขตามผลตรวจดิน</div>
-            <p className="mt-1.5 text-[15px] leading-relaxed text-ink">{step.note}</p>
+          <div className="mt-6 rounded-xl bg-[#EEF0E6] px-4 py-3 ring-1 ring-olive/15">
+            <div className="th-label text-olive">ถ้าผลตรวจดินเป็นดินโซดิก</div>
+            <p className="mt-1 text-[15px] leading-relaxed text-ink">{step.note}</p>
           </div>
         ) : null}
 
-        <div className="mt-6 flex flex-wrap gap-2">
+        <div className="mt-6 flex flex-wrap gap-1.5">
           {step.specs.map((s) => (
-            <span key={s} className="border border-rule bg-card px-2.5 py-1 text-xs font-medium text-ink">
+            <span key={s} className="rounded-full bg-stone-100 px-2.5 py-1 text-[12.5px] font-medium text-stone-700">
               {s}
             </span>
           ))}
@@ -129,7 +123,7 @@ function Stage({ model, exploded, onModel, onExplode }: {
       code={`SIM. ${step.fig.replace('FIG. ', '')}`}
       title={step.title.split(':')[0]}
       className="flex h-full flex-col"
-      bodyClassName="relative flex-1 overflow-hidden"
+      bodyClassName="relative flex-1 overflow-hidden rounded-b-2xl"
     >
       <div ref={wrapRef} className="absolute inset-0">
         <Suspense
@@ -145,31 +139,21 @@ function Stage({ model, exploded, onModel, onExplode }: {
 
       {/* controls */}
       <div className="pointer-events-none absolute inset-x-0 top-0 flex items-start justify-between gap-3 p-4">
-        <div className="pointer-events-auto flex border border-rule bg-card/95">
-          {SOLUTION_STEPS.map((s, i) => (
-            <button
-              key={s.fig}
-              type="button"
-              onClick={() => onModel(i as ModelId)}
-              className={cx(
-                'border-r border-rule px-3 py-2 font-mono text-[11px] tracking-[0.12em] transition-colors last:border-r-0',
-                model === i ? 'bg-ink text-paper' : 'text-muted hover:text-ink',
-              )}
-            >
-              {s.fig}
-            </button>
-          ))}
-        </div>
+        <PillTabs
+          className="pointer-events-auto"
+          size="sm"
+          layoutId="sim2-model"
+          value={model}
+          onChange={(id) => onModel(id as ModelId)}
+          items={SOLUTION_STEPS.map((s, i) => ({ id: i, label: <span className="font-mono tracking-[0.08em]">{s.fig}</span> }))}
+        />
         <button
           type="button"
           onClick={onExplode}
-          className={cx(
-            'pointer-events-auto border px-3 py-2 text-[13px] font-medium transition-colors',
-            exploded ? 'border-rust bg-rust text-paper' : 'border-ink bg-card/95 text-ink hover:bg-ink hover:text-paper',
-          )}
+          aria-pressed={exploded}
+          className={cx('pointer-events-auto', exploded ? 'inline-flex items-center gap-2 rounded-full bg-rust px-3.5 py-1.5 text-[13px] font-medium text-white shadow-sm' : BTN_GHOST)}
         >
-          <span className="mr-2 font-mono text-[11px] tracking-[0.12em]">EXPLODE LAYERS</span>
-          (แยกชั้นโครงสร้าง)
+          {exploded ? 'รวมชั้นกลับ' : 'แยกชั้นให้ดู'}
         </button>
       </div>
 
@@ -182,15 +166,15 @@ function Stage({ model, exploded, onModel, onExplode }: {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 6 }}
             transition={{ duration: 0.3, ease: EASE }}
-            className="border border-rule bg-card/95 px-3 py-2"
+            className="rounded-xl bg-white/90 px-3 py-2 shadow-sm ring-1 ring-stone-900/[0.06] backdrop-blur"
           >
             {exploded ? (
-              <span className="text-[12px] text-muted">มุมมองแยกชั้น: ซ่อนอนุภาคเพื่อให้เห็นโครงสร้างชัดเจน</span>
+              <span className="text-[12px] text-muted">ซ่อนอนุภาคไว้ก่อน จะได้เห็นแต่ละชั้นชัดๆ</span>
             ) : (
               <ul className="space-y-1">
                 {step.legend.map((l) => (
                   <li key={l.label} className="flex items-center gap-2 text-[12px] text-ink">
-                    <span className="h-2.5 w-2.5 rounded-full border border-ink/40" style={{ background: l.color }} />
+                    <span className="h-2.5 w-2.5 rounded-full ring-1 ring-stone-900/20" style={{ background: l.color }} />
                     {l.label}
                   </li>
                 ))}
@@ -198,7 +182,7 @@ function Stage({ model, exploded, onModel, onExplode }: {
             )}
           </motion.div>
         </AnimatePresence>
-        <span className="mono-label text-faint">Drag to rotate</span>
+        <span className="text-[11.5px] text-faint">ลากเพื่อหมุนดู</span>
       </div>
     </Figure>
   );
@@ -210,11 +194,11 @@ function FitAndProcess() {
   return (
     <div className="mt-16 space-y-5">
       <Reveal>
-        <Figure code="FIG. 2.4" title="เหตุที่เหมาะกับชุมชน">
+        <Figure code="FIG. 2.4" title="ทำไมแบบนี้ถึงเหมาะกับที่นี่">
           <ol className="grid gap-5 md:grid-cols-3">
             {FIT_REASONS.map((r, i) => (
-              <li key={r} className="flex gap-4 border-rule md:border-l md:pl-5 md:first:border-l-0 md:first:pl-0">
-                <span className="font-mono text-2xl font-semibold leading-none text-ink">{String(i + 1).padStart(2, '0')}</span>
+              <li key={r} className="flex gap-4">
+                <span className="font-mono text-2xl font-semibold leading-none text-stone-300">{String(i + 1).padStart(2, '0')}</span>
                 <span className="text-[15px] leading-relaxed">{r}</span>
               </li>
             ))}
@@ -229,7 +213,7 @@ function FitAndProcess() {
   );
 }
 
-/* ---------- FIG. 2.5 interactive co-creation timeline ---------- */
+/* ---------- FIG. 2.5 co-creation timeline ---------- */
 
 function CoCreationTimeline() {
   const [active, setActive] = useState(0);
@@ -237,17 +221,12 @@ function CoCreationTimeline() {
   const step = COCREATION_STEPS[active];
 
   return (
-    <Figure
-      code="FIG. 2.5"
-      title="ขั้นตอนการทำงานร่วมกับชุมชน 5 ขั้น"
-      note="กดแต่ละขั้นเพื่อดูรายละเอียด"
-      bodyClassName="p-6"
-    >
+    <Figure code="FIG. 2.5" title="ทำงานกับชุมชน 5 ขั้น" note="กดแต่ละขั้นเพื่อดูรายละเอียด" bodyClassName="px-6 pb-6 pt-5">
       {/* rail */}
       <div className="relative">
-        <div className="absolute left-[10%] right-[10%] top-[19px] h-px bg-rule-strong" />
+        <div className="absolute left-[10%] right-[10%] top-[19px] h-[2px] rounded-full bg-stone-200" />
         <motion.div
-          className="absolute left-[10%] top-[18px] h-[3px] origin-left bg-rust"
+          className="absolute left-[10%] top-[19px] h-[2px] origin-left rounded-full bg-rust"
           style={{ width: '80%' }}
           initial={false}
           animate={{ scaleX: active / last }}
@@ -263,23 +242,20 @@ function CoCreationTimeline() {
                   onClick={() => setActive(i)}
                   aria-current={i === active ? 'step' : undefined}
                   className={cx(
-                    'grid h-10 w-10 place-items-center border font-mono text-[12px] transition-colors duration-300',
+                    'grid h-10 w-10 place-items-center rounded-full font-mono text-[12px] ring-1 transition-all duration-300',
                     i === active
-                      ? 'border-rust bg-rust text-paper'
+                      ? 'bg-rust text-white shadow-[0_6px_16px_-6px_rgba(154,74,36,0.6)] ring-rust'
                       : done
-                        ? 'border-rust bg-rust-soft text-rust'
-                        : 'border-ink bg-card text-ink hover:bg-paper',
+                        ? 'bg-rust-soft text-rust ring-rust/30'
+                        : 'bg-white text-stone-600 ring-stone-900/10 hover:ring-stone-900/30',
                   )}
                 >
-                  {String(i + 1).padStart(2, '0')}
+                  {i + 1}
                 </button>
                 <button
                   type="button"
                   onClick={() => setActive(i)}
-                  className={cx(
-                    'mt-3 text-[14px] font-medium leading-snug transition-colors',
-                    i === active ? 'text-ink' : 'text-muted hover:text-ink',
-                  )}
+                  className={cx('mt-3 text-[14px] font-medium leading-snug transition-colors', i === active ? 'text-ink' : 'text-muted hover:text-ink')}
                 >
                   {s.short}
                 </button>
@@ -290,7 +266,7 @@ function CoCreationTimeline() {
       </div>
 
       {/* detail */}
-      <div className="mt-6 grid grid-cols-12 gap-5 border-t border-rule pt-5">
+      <div className={cx(INSET, 'mt-6 grid grid-cols-12 gap-5 p-5')}>
         <AnimatePresence mode="wait">
           <motion.div
             key={active}
@@ -301,15 +277,18 @@ function CoCreationTimeline() {
             className="col-span-12 grid grid-cols-12 gap-5 lg:col-span-10"
           >
             <div className="col-span-12 md:col-span-7">
-              <div className="th-label text-faint">ข้อเสนอในใบสมัคร · ขั้นที่ {active + 1}</div>
+              <div className="flex items-center gap-2">
+                <span className="th-label text-faint">ขั้นที่ {active + 1}</span>
+                <SourceTag kind="proposal" />
+              </div>
               <p className="mt-2 text-[17px] leading-[1.8] text-ink">{step.detail}</p>
             </div>
             <div className="col-span-12 md:col-span-5">
-              <div className="th-label text-faint">ผู้ร่วมดำเนินการ</div>
-              <ul className="mt-2 flex flex-wrap gap-2">
-                <li className="border border-ink bg-ink px-2.5 py-1 text-[13px] text-paper">คณะผู้จัดทำ</li>
+              <div className="th-label text-faint">ทำร่วมกับ</div>
+              <ul className="mt-2 flex flex-wrap gap-1.5">
+                <li className="rounded-full bg-stone-200/70 px-2.5 py-1 text-[13px] text-ink">คณะผู้จัดทำ</li>
                 {step.people.map((p) => (
-                  <li key={p} className="border border-rule bg-paper px-2.5 py-1 text-[13px] text-ink">
+                  <li key={p} className="rounded-full bg-white px-2.5 py-1 text-[13px] text-ink ring-1 ring-stone-900/10">
                     {PEOPLE[p].name}
                     <span className="ml-1.5 text-muted">· {PEOPLE[p].role}</span>
                   </li>
@@ -319,21 +298,11 @@ function CoCreationTimeline() {
           </motion.div>
         </AnimatePresence>
         <div className="col-span-12 flex items-start justify-end gap-2 lg:col-span-2">
-          <button
-            type="button"
-            onClick={() => setActive((a) => Math.max(0, a - 1))}
-            disabled={active === 0}
-            className="border border-rule px-3 py-2 font-mono text-[11px] tracking-[0.12em] text-ink transition-colors hover:border-ink disabled:opacity-30"
-          >
-            PREV
+          <button type="button" onClick={() => setActive((a) => Math.max(0, a - 1))} disabled={active === 0} className={BTN_GHOST}>
+            ก่อนหน้า
           </button>
-          <button
-            type="button"
-            onClick={() => setActive((a) => Math.min(last, a + 1))}
-            disabled={active === last}
-            className="border border-ink bg-ink px-3 py-2 font-mono text-[11px] tracking-[0.12em] text-paper transition-opacity disabled:opacity-30"
-          >
-            NEXT
+          <button type="button" onClick={() => setActive((a) => Math.min(last, a + 1))} disabled={active === last} className={BTN_SOLID}>
+            ถัดไป
           </button>
         </div>
       </div>

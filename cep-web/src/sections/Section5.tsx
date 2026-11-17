@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { PROJECT, SUMMARY, type Scene } from '../content';
-import { EASE, Reveal, Section } from '../components/ui';
+import { EASE, Reveal, Section, SpotlightCard } from '../components/ui';
 
 export default function Section5({ scene }: { scene: Scene }) {
   return (
@@ -20,7 +20,7 @@ function SummaryTable() {
         <div className="mono-label text-faint">5.1</div>
         <h2 className="mt-2 text-2xl font-semibold">สรุป</h2>
       </Reveal>
-      <ol className="col-span-12 border-t border-ink lg:col-span-9">
+      <ol className="col-span-12 border-t border-stone-900/15 lg:col-span-9">
         {SUMMARY.map((row, i) => (
           <motion.li
             key={row.code}
@@ -45,17 +45,11 @@ function SummaryTable() {
 function TeamCredits() {
   return (
     <Reveal className="mt-20">
-      <div className="relative border border-rule bg-card px-8 py-14 lg:px-16">
-        {/* corner ticks */}
-        <span className="absolute -left-px -top-px h-3 w-3 border-l border-t border-ink" />
-        <span className="absolute -right-px -top-px h-3 w-3 border-r border-t border-ink" />
-        <span className="absolute -bottom-px -left-px h-3 w-3 border-b border-l border-ink" />
-        <span className="absolute -bottom-px -right-px h-3 w-3 border-b border-r border-ink" />
-
+      <SpotlightCard className="px-8 py-14 lg:px-16">
         <div className="text-center">
           <div className="mono-label text-faint">Research Team &amp; Advisor</div>
-          <h2 className="mx-auto mt-5 max-w-4xl text-[1.35rem] font-medium leading-[1.6] text-ink">{PROJECT.title}</h2>
-          <div className="mx-auto mt-8 h-px w-24 bg-ink" />
+          <h2 className="mx-auto mt-5 max-w-4xl text-balance text-[1.35rem] font-medium leading-[1.6] text-ink">{PROJECT.title}</h2>
+          <div className="mx-auto mt-8 h-px w-24 bg-rust/40" />
         </div>
 
         <div className="mx-auto mt-10 grid max-w-5xl grid-cols-12 gap-10">
@@ -69,7 +63,7 @@ function TeamCredits() {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, ease: EASE, delay: 0.1 + i * 0.07 }}
-                  className="flex items-baseline gap-5 border-b border-rule py-3 last:border-b-0"
+                  className="flex items-baseline gap-5 border-b border-stone-900/[0.06] py-3 last:border-b-0"
                 >
                   <span className="font-mono text-[11px] text-faint">{String(i + 1).padStart(2, '0')}</span>
                   <span className="text-[1.15rem]">{name}</span>
@@ -80,7 +74,7 @@ function TeamCredits() {
 
           <div className="col-span-12 flex flex-col md:col-span-5">
             <div className="th-label text-faint">ครูที่ปรึกษาโครงการ</div>
-            <div className="mt-4 border-y border-ink py-4 text-[1.15rem]">{PROJECT.advisor}</div>
+            <div className="mt-4 border-y border-stone-900/15 py-4 text-[1.15rem]">{PROJECT.advisor}</div>
 
             <div className="th-label mt-10 text-faint">สถาบัน</div>
             <div className="mt-4 text-[1.05rem] leading-relaxed">{PROJECT.school}</div>
@@ -93,10 +87,10 @@ function TeamCredits() {
 
         <div className="mt-14 flex items-center justify-center gap-4 text-faint">
           <span className="h-px w-10 bg-rule-strong" />
-          <span className="mono-label">End of presentation</span>
+          <span className="text-[13px]">ขอบคุณครับ</span>
           <span className="h-px w-10 bg-rule-strong" />
         </div>
-      </div>
+      </SpotlightCard>
     </Reveal>
   );
 }

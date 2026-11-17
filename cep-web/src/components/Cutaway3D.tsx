@@ -278,11 +278,11 @@ function Callout({ position, code, text, left = false }: { position: Vec3; code:
           flexDirection: left ? 'row-reverse' : 'row',
         }}
       >
-        <span className="block h-2.5 w-2.5 shrink-0 border border-ink bg-card" />
-        <span className="block h-px w-7 shrink-0 bg-ink" />
+        <span className="block h-2.5 w-2.5 shrink-0 rounded-full border-2 border-white bg-stone-900 shadow-sm" />
+        <span className="block h-px w-7 shrink-0 bg-stone-900/50" />
         <span
           ref={boxRef}
-          className="flex items-baseline gap-2 whitespace-nowrap border border-ink bg-card/95 px-2 py-1 shadow-[2px_2px_0_0_rgba(20,22,21,0.12)]"
+          className="flex items-baseline gap-2 whitespace-nowrap rounded-lg bg-white/95 px-2.5 py-1 shadow-[0_4px_14px_-6px_rgba(20,22,21,0.25)] ring-1 ring-stone-900/10"
         >
           <span className="font-mono text-[10px] font-semibold tracking-[0.12em] text-rust">{code}</span>
           <span className="text-[12px] leading-tight text-ink">{text}</span>
@@ -560,10 +560,12 @@ function ModelCompostPen({ exploded }: { exploded: boolean }) {
         code="2.2-C"
         text="ท่อตั้งเจาะรู"
       />
+      {/* left side: keeps it clear of 2.2-B / 2.2-E, which share the right edge */}
       <Callout
-        position={[1.3, exploded ? 0.24 + 0.12 / 2 + 0.14 : 0.24 + 0.06, -0.1]}
+        position={[-1.3, exploded ? 0.24 + 0.12 / 2 + 0.14 : 0.24 + 0.06, -0.1]}
         code="2.2-D"
         text="เปลือกกุ้ง 1 ส่วน (โปรตีนสูง)"
+        left
       />
       <Callout
         position={[1.3, exploded ? 0.36 + 0.12 + 0.28 : 0.36 + 0.12, -0.1]}

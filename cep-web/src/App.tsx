@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import Lenis from 'lenis';
 import { SCENES } from './content';
 import AcademicPresenterBar from './components/AcademicPresenterBar';
+import { ScrollProgress } from './components/ui';
 import Section1 from './sections/Section1';
 import Section2 from './sections/Section2';
 import Section3 from './sections/Section3';
@@ -100,7 +101,8 @@ export default function App() {
 
   return (
     <>
-      <main>
+      <ScrollProgress />
+      <main className="pb-32">
         <Section1 scene={SCENES[0]} />
         <Section2 scene={SCENES[1]} />
         <Section3 scene={SCENES[2]} />

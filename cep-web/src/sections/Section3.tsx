@@ -14,18 +14,14 @@ import {
   type Constraint,
   type Scene,
 } from '../content';
-import { EASE, Figure, Reveal, Section, cx } from '../components/ui';
+import { BTN_GHOST, EASE, Figure, INSET, Lead, PillTabs, Reveal, Section, SourceTag, cx } from '../components/ui';
 
 export default function Section3({ scene }: { scene: Scene }) {
   return (
     <Section scene={scene}>
-      <Reveal className="grid grid-cols-12 gap-5">
-        <div className="col-span-12 lg:col-span-3">
-          <div className="mono-label text-faint">3.1</div>
-          <h2 className="mt-2 text-2xl font-semibold">ภาพรวม</h2>
-        </div>
-        <p className="col-span-12 text-[1.2rem] leading-[1.9] lg:col-span-9">{SECTION3_LEAD}</p>
-      </Reveal>
+      <Lead num="3.1" title="สิ่งที่ต้องรับมือ">
+        {SECTION3_LEAD}
+      </Lead>
 
       <Reveal className="mt-10">
         <SoilSim />
@@ -249,37 +245,26 @@ function SoilSim() {
   return (
     <Figure
       code="SIM. 3.1"
-      title="การจำแนกชนิดดินเค็ม และบทบาทของยิปซัม"
-      note="สลับผลตรวจดินเพื่อเปรียบเทียบ"
-      bodyClassName="grid grid-cols-12 gap-0"
+      title="ดินเค็มแบบไหน และยิปซัมมีหน้าที่อะไร"
+      note="สลับผลตรวจดินเพื่อเทียบกัน"
+      bodyClassName="grid grid-cols-12 gap-2 p-2 pt-3"
     >
       {/* left: controls + explanation */}
-      <div className="col-span-12 border-b border-rule p-6 lg:col-span-5 lg:border-b-0 lg:border-r">
-        <div className="border border-rule bg-paper p-4">
-          <div className="th-label text-faint">ข้อเสนอในใบสมัคร</div>
-          <p className="mt-1.5 text-[15px] leading-[1.8]">{SOIL_PROPOSAL}</p>
-        </div>
+      <div className="col-span-12 p-4 lg:col-span-5">
+        <SourceTag kind="proposal" />
+        <p className="mt-2 text-[16px] leading-[1.8]">{SOIL_PROPOSAL}</p>
 
-        <div className="th-label mt-6 text-faint">ผลตรวจจากสถานีพัฒนาที่ดิน (สมมุติ 2 กรณี)</div>
-        <div className="mt-2 grid grid-cols-2 border border-ink">
-          {SOIL_CASES.map((c) => (
-            <button
-              key={c.id}
-              type="button"
-              onClick={() => {
-                setKind(c.id);
-                setGypsum(false);
-              }}
-              className={cx(
-                'px-4 py-3 text-left transition-colors first:border-r first:border-ink',
-                kind === c.id ? 'bg-ink text-paper' : 'bg-card text-ink hover:bg-paper',
-              )}
-            >
-              <span className="block text-[16px] font-semibold">{c.label}</span>
-              <span className={cx('mono-label mt-0.5 block', kind === c.id ? 'text-paper/70' : 'text-faint')}>{c.labelEn}</span>
-            </button>
-          ))}
-        </div>
+        <div className="th-label mt-6 text-faint">ถ้าผลตรวจจากสถานีพัฒนาที่ดินออกมาเป็น…</div>
+        <PillTabs
+          className="mt-2"
+          layoutId="soil-kind"
+          value={kind}
+          onChange={(id) => {
+            setKind(id);
+            setGypsum(false);
+          }}
+          items={SOIL_CASES.map((c) => ({ id: c.id, label: c.label }))}
+        />
 
         <AnimatePresence mode="wait">
           <motion.div
@@ -294,35 +279,37 @@ function SoilSim() {
                 type="button"
                 onClick={() => setGypsum((g) => !g)}
                 className={cx(
-                  'mt-4 flex w-full items-center justify-between border px-4 py-3 text-left transition-colors',
-                  gypsum ? 'border-olive bg-olive text-paper' : 'border-ink bg-card text-ink hover:bg-paper',
+                  'mt-4 flex w-full items-center justify-between rounded-xl px-4 py-3 text-left ring-1 transition-colors',
+                  gypsum ? 'bg-olive text-white ring-olive' : 'bg-white text-ink ring-stone-900/10 hover:bg-stone-50',
                 )}
               >
-                <span className="text-[15px] font-medium">{gypsum ? 'ใส่ยิปซัมแล้ว: Ca²⁺ เข้าแทนที่ Na⁺' : 'กดเพื่อจำลองการใส่ยิปซัม'}</span>
-                <span className="font-mono text-[11px] tracking-[0.12em]">{gypsum ? 'RESET' : 'APPLY'}</span>
+                <span className="text-[15px] font-medium">{gypsum ? 'ใส่ยิปซัมแล้ว: Ca²⁺ เข้าไปแทนที่ Na⁺' : 'ลองใส่ยิปซัมดู'}</span>
+                <span className="text-[12.5px] opacity-70">{gypsum ? 'ย้อนกลับ' : 'CaSO₄·2H₂O'}</span>
               </button>
             ) : null}
 
-            <div className="th-label mt-6 text-faint">หลักการทางวิทยาศาสตร์</div>
-            <ol className="mt-2 space-y-2.5">
-              {info.science.map((s, i) => (
-                <li key={s} className="grid grid-cols-[2rem_1fr] gap-2 text-[14.5px] leading-relaxed text-muted">
-                  <span className="font-mono text-xs leading-7 text-faint">{String(i + 1).padStart(2, '0')}</span>
+            <div className="mt-6">
+              <SourceTag kind="science" />
+            </div>
+            <ul className="mt-3 space-y-2.5">
+              {info.science.map((s) => (
+                <li key={s} className="flex gap-3 text-[14.5px] leading-relaxed text-muted">
+                  <span className="mt-[10px] h-1 w-1 shrink-0 rounded-full bg-stone-400" />
                   <span>{s}</span>
                 </li>
               ))}
-            </ol>
+            </ul>
           </motion.div>
         </AnimatePresence>
       </div>
 
       {/* right: microscope view + remedy hierarchy */}
-      <div className="col-span-12 flex flex-col p-6 lg:col-span-7">
+      <div className={cx(INSET, 'col-span-12 flex flex-col p-5 lg:col-span-7')}>
         <div className="flex items-center justify-between">
-          <span className="mono-label text-faint">Micro-scale view · schematic</span>
+          <span className="text-[12.5px] text-faint">ภาพจำลองระดับอนุภาค</span>
           <div className="flex items-center gap-4 text-[12px] text-muted">
             <span className="flex items-center gap-1.5">
-              <span className="h-2.5 w-5 border border-ink bg-[#CDBB9E]" /> อนุภาคดินเหนียว
+              <span className="h-2.5 w-5 rounded-sm bg-[#CDBB9E] ring-1 ring-stone-900/30" /> อนุภาคดินเหนียว
             </span>
             <span className="flex items-center gap-1.5">
               <span className="h-3 w-3 rounded-full border border-rust bg-rust-soft" /> Na⁺
@@ -346,19 +333,13 @@ function SoilSim() {
             className="mt-4 grid grid-cols-12 gap-4"
           >
             <div className="col-span-12 md:col-span-7">
-              <div className="th-label text-faint">แนวทางตามใบสมัคร</div>
-              <div className="mt-2 border-2 border-ink bg-card p-3">
-                <div className="flex items-baseline gap-2">
-                  <span className="mono-label text-rust">Primary</span>
-                  <span className="th-label text-rust">ตัวแก้หลัก</span>
-                </div>
+              <SourceTag kind="proposal" />
+              <div className="mt-2 rounded-xl bg-white p-3.5 shadow-sm ring-1 ring-stone-900/10">
+                <div className="th-label text-rust">ตัวแก้หลัก</div>
                 <div className="mt-1 text-[17px] font-semibold leading-snug">{info.primary}</div>
               </div>
-              <div className="ml-6 mt-2 border border-dashed border-rule-strong bg-paper p-3">
-                <div className="flex items-baseline gap-2">
-                  <span className="mono-label text-faint">Support</span>
-                  <span className="th-label text-faint">ตัวเสริม</span>
-                </div>
+              <div className="ml-6 mt-2 rounded-xl border border-dashed border-stone-300 bg-white/60 p-3.5">
+                <div className="th-label text-faint">ตัวเสริม</div>
                 <div className="mt-1 text-[15px] text-muted">{info.support}</div>
               </div>
             </div>
@@ -366,7 +347,7 @@ function SoilSim() {
               {kind === 'sodic' ? (
                 <>
                   <div className="th-label text-faint">ปฏิกิริยาแลกเปลี่ยนไอออน</div>
-                  <div className="mt-2 border border-rule bg-paper p-3 font-mono text-[12px] leading-relaxed text-ink">
+                  <div className="mt-2 rounded-xl bg-white p-3.5 font-mono text-[12px] leading-relaxed text-ink ring-1 ring-stone-900/[0.07]">
                     <div>{SOIL_EQUATION.lhs}</div>
                     <div className="my-1 text-rust">→</div>
                     <div>{SOIL_EQUATION.rhs}</div>
@@ -375,13 +356,13 @@ function SoilSim() {
               ) : (
                 <>
                   <div className="th-label text-faint">ข้อควรระวัง</div>
-                  <p className="mt-2 border border-rule bg-paper p-3 text-[13.5px] leading-relaxed text-muted">
-                    ถ้าผลตรวจเป็นดินโซดิก เปลือกหอยแก้เองไม่ได้ เพราะ CaCO₃ ละลายน้ำได้น้อยมาก ต้องใช้ยิปซัมเป็นตัวแก้หลัก
+                  <p className="mt-2 rounded-xl bg-white p-3.5 text-[13.5px] leading-relaxed text-muted ring-1 ring-stone-900/[0.07]">
+                    ถ้าออกมาเป็นดินโซดิก เปลือกหอยแก้เองไม่ได้ เพราะ CaCO₃ ละลายน้ำได้น้อยมาก ต้องใช้ยิปซัมเป็นตัวหลัก
                   </p>
                 </>
               )}
               <div className="mt-3 text-[11.5px] leading-relaxed text-faint">
-                เกณฑ์จำแนกทั่วไป: <span className="font-mono">{info.criteria}</span> (US Salinity Laboratory) — ไม่ใช่ผลตรวจของพื้นที่
+                เกณฑ์ทั่วไปของ US Salinity Laboratory: <span className="font-mono">{info.criteria}</span> ไม่ใช่ผลตรวจของพื้นที่นี้
               </div>
             </div>
           </motion.div>
@@ -604,40 +585,26 @@ function LimeSim() {
   return (
     <Figure
       code="SIM. 3.2"
-      title="แผนสำรองเมื่อกองหมักมีปัญหา และเหตุผลทางเคมีที่ห้ามโรยปูนขาว"
-      note="กดเปรียบเทียบ 2 วิธี"
-      bodyClassName="grid grid-cols-12 gap-0"
+      title="ถ้ากองหมักแฉะหรือเริ่มมีกลิ่น ทำอะไร และทำไมห้ามโรยปูนขาว"
+      note="กดเทียบ 2 วิธี"
+      bodyClassName="grid grid-cols-12 gap-2 p-2 pt-3"
     >
-      <div className="col-span-12 border-b border-rule p-6 lg:col-span-5 lg:border-b-0 lg:border-r">
-        <div className="flex items-center gap-3 border border-rust bg-rust-soft px-4 py-3">
-          <span className="mono-label text-rust">Scenario</span>
-          <span className="text-[16px] font-semibold text-ink">สถานการณ์: {BACKUP_TRIGGER}</span>
+      <div className="col-span-12 p-4 lg:col-span-5">
+        <div className="rounded-xl bg-rust-soft px-4 py-3 ring-1 ring-rust/15">
+          <span className="th-label text-rust">สถานการณ์</span>
+          <span className="mt-0.5 block text-[16px] font-semibold text-ink">{BACKUP_TRIGGER}</span>
         </div>
 
-        <div className="mt-4 grid grid-cols-2 border border-ink">
-          <button
-            type="button"
-            onClick={() => pick('wrong')}
-            className={cx(
-              'border-r border-ink px-4 py-3 text-left transition-colors',
-              wrong ? 'bg-rust text-paper' : 'bg-card text-ink hover:bg-paper',
-            )}
-          >
-            <span className={cx('mono-label block', wrong ? 'text-paper/75' : 'text-rust')}>Wrong</span>
-            <span className="mt-0.5 block text-[15px] font-semibold">เผลอโรยปูนขาว</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => pick('team')}
-            className={cx(
-              'px-4 py-3 text-left transition-colors',
-              !wrong ? 'bg-olive text-paper' : 'bg-card text-ink hover:bg-paper',
-            )}
-          >
-            <span className={cx('mono-label block', !wrong ? 'text-paper/75' : 'text-olive')}>Team plan</span>
-            <span className="mt-0.5 block text-[15px] font-semibold">แผนสำรองของทีม</span>
-          </button>
-        </div>
+        <PillTabs
+          className="mt-4"
+          layoutId="lime-mode"
+          value={mode}
+          onChange={pick}
+          items={[
+            { id: 'wrong', label: 'ถ้าเผลอโรยปูนขาว' },
+            { id: 'team', label: 'แผนสำรองของทีม' },
+          ]}
+        />
 
         <AnimatePresence mode="wait">
           <motion.div
@@ -652,7 +619,7 @@ function LimeSim() {
             {wrong ? (
               <div className="mt-3 space-y-2">
                 {LIME_WRONG.equations.map((eq) => (
-                  <div key={eq.lhs} className="border border-rule bg-paper px-4 py-3">
+                  <div key={eq.lhs} className={cx(INSET, 'px-4 py-3')}>
                     <div className="font-mono text-[15px] text-ink">
                       {eq.lhs} <span className="mx-1 text-rust">→</span> {eq.rhs}
                     </div>
@@ -663,7 +630,7 @@ function LimeSim() {
             ) : (
               <ol className="mt-3 space-y-2">
                 {LIME_TEAM.actions.map((a, i) => (
-                  <li key={a} className="flex items-center gap-3 border border-olive/50 bg-paper px-4 py-3">
+                  <li key={a} className="flex items-center gap-3 rounded-xl bg-[#EEF0E6] px-4 py-3 ring-1 ring-olive/15">
                     <span className="font-mono text-[12px] text-olive">{String(i + 1).padStart(2, '0')}</span>
                     <span className="text-[16px] font-semibold">{a}</span>
                   </li>
@@ -671,28 +638,26 @@ function LimeSim() {
               </ol>
             )}
 
-            <div className="th-label mt-6 text-faint">หลักการทางวิทยาศาสตร์</div>
-            <ol className="mt-2 space-y-2.5">
-              {panel.science.map((s, i) => (
-                <li key={s} className="grid grid-cols-[2rem_1fr] gap-2 text-[14.5px] leading-relaxed text-muted">
-                  <span className="font-mono text-xs leading-7 text-faint">{String(i + 1).padStart(2, '0')}</span>
+            <div className="mt-6">
+              <SourceTag kind="science" />
+            </div>
+            <ul className="mt-3 space-y-2.5">
+              {panel.science.map((s) => (
+                <li key={s} className="flex gap-3 text-[14.5px] leading-relaxed text-muted">
+                  <span className="mt-[10px] h-1 w-1 shrink-0 rounded-full bg-stone-400" />
                   <span>{s}</span>
                 </li>
               ))}
-            </ol>
+            </ul>
           </motion.div>
         </AnimatePresence>
       </div>
 
-      <div className="col-span-12 flex flex-col p-6 lg:col-span-7">
+      <div className={cx(INSET, 'col-span-12 flex flex-col p-5 lg:col-span-7')}>
         <div className="flex items-center justify-between">
-          <span className="mono-label text-faint">{wrong ? 'Acid–base equilibrium · NH₄⁺ / NH₃' : 'Backup plan · mix adjustment'}</span>
-          <button
-            type="button"
-            onClick={() => setPlay((p) => p + 1)}
-            className="border border-rule px-3 py-1.5 font-mono text-[11px] tracking-[0.12em] text-ink hover:border-ink"
-          >
-            REPLAY
+          <span className="text-[12.5px] text-faint">{wrong ? 'สมดุล NH₄⁺ ⇌ NH₃ ตาม pH' : 'ปรับส่วนผสมในคอก'}</span>
+          <button type="button" onClick={() => setPlay((p) => p + 1)} className={BTN_GHOST}>
+            เล่นอีกครั้ง
           </button>
         </div>
         <div className="mt-3 flex-1">
@@ -700,8 +665,8 @@ function LimeSim() {
         </div>
         <p className="mt-2 text-[11.5px] leading-relaxed text-faint">
           {wrong
-            ? 'กราฟหลักการคำนวณจากสมดุลกรด-เบสของแอมโมเนียม (pKa ≈ 9.25 ที่ 25°C) ไม่ใช่ผลการทดลอง'
-            : 'แผนภาพแสดงสัดส่วนเชิงหลักการ ตัวเลข 1 : 2 และ +30% มาจากใบสมัคร'}
+            ? 'คำนวณจากสมดุลกรด-เบสของแอมโมเนียม (pKa ≈ 9.25 ที่ 25°C) เป็นกราฟหลักการ ไม่ใช่ผลการทดลอง'
+            : 'สัดส่วน 1 : 2 และ +30% มาจากใบสมัคร ความยาวแท่งวาดเพื่อเทียบให้เห็นภาพเท่านั้น'}
         </p>
       </div>
     </Figure>
@@ -722,7 +687,7 @@ function ConstraintGrid() {
             <ul className="mt-4 space-y-2">
               {c.points.map((p) => (
                 <li key={p} className="flex gap-3 text-[15px] leading-relaxed text-muted">
-                  <span className="mt-[9px] h-1.5 w-1.5 shrink-0 bg-rust" />
+                  <span className="mt-[10px] h-1.5 w-1.5 shrink-0 rounded-full bg-rust" />
                   <span>{p}</span>
                 </li>
               ))}
@@ -738,15 +703,15 @@ function ConstraintGrid() {
 function ConstraintVisual({ c }: { c: Constraint }) {
   if (c.code === 'L2') {
     return (
-      <div className="mt-5 border-t border-rule pt-4">
+      <div className="mt-5 pt-1">
         <div className="th-label text-faint">ตารางเวรเก็บเปลือก</div>
-        <div className="mt-2 grid grid-cols-7 border border-ink">
+        <div className="mt-2 grid grid-cols-7 gap-1">
           {SCHEDULE.map((d) => (
             <div
               key={d.day}
               className={cx(
-                'flex min-h-[64px] flex-col items-center justify-start border-r border-rule px-1 py-2 text-center last:border-r-0',
-                d.on ? 'bg-rust-soft' : 'bg-card',
+                'flex min-h-[64px] flex-col items-center justify-start rounded-lg px-1 py-2 text-center',
+                d.on ? 'bg-rust-soft ring-1 ring-rust/15' : 'bg-stone-50',
               )}
             >
               <span className={cx('text-[13px] font-semibold', d.on ? 'text-rust' : 'text-faint')}>{d.day}</span>
@@ -755,36 +720,36 @@ function ConstraintVisual({ c }: { c: Constraint }) {
           ))}
         </div>
         <div className="mt-2 flex items-center justify-between text-[12px] text-muted">
-          <span>4 รอบ / สัปดาห์</span>
-          <span className="font-mono text-rust">MAX 48 h</span>
+          <span>4 รอบต่อสัปดาห์</span>
+          <span className="text-rust">ค้างไม่เกิน 48 ชม.</span>
         </div>
       </div>
     );
   }
   if (c.code === 'L3') {
     return (
-      <div className="mt-5 border-t border-rule pt-4">
-        <div className="th-label text-faint">ขั้นตอนก่อนใช้วัสดุ</div>
-        <div className="mt-2 flex items-stretch gap-2 text-center text-[13px]">
-          <div className="flex-1 border border-rule bg-paper px-2 py-2.5">ขุยมะพร้าว / แกลบ</div>
-          <span className="self-center text-faint">→</span>
-          <div className="flex-1 border-2 border-rust bg-rust-soft px-2 py-2.5 font-semibold text-rust">วัด EC ทุกครั้ง</div>
-          <span className="self-center text-faint">→</span>
-          <div className="flex-1 border border-rule bg-paper px-2 py-2.5">ผสมลงคอก</div>
+      <div className="mt-5 pt-1">
+        <div className="th-label text-faint">ก่อนใช้วัสดุทุกครั้ง</div>
+        <div className="mt-2 flex items-stretch gap-1.5 text-center text-[13px]">
+          <div className="flex-1 rounded-lg bg-stone-50 px-2 py-2.5">ขุยมะพร้าว / แกลบ</div>
+          <span className="self-center text-stone-300">→</span>
+          <div className="flex-1 rounded-lg bg-rust-soft px-2 py-2.5 font-semibold text-rust ring-1 ring-rust/20">วัด EC</div>
+          <span className="self-center text-stone-300">→</span>
+          <div className="flex-1 rounded-lg bg-stone-50 px-2 py-2.5">ผสมลงคอก</div>
         </div>
       </div>
     );
   }
   return (
-    <div className="mt-5 border-t border-rule pt-4">
-      <div className="th-label text-faint">ที่มาของงบและวัสดุ</div>
+    <div className="mt-5 pt-1">
+      <div className="th-label text-faint">เงินกับของมาจากไหน</div>
       <div className="mt-2 grid grid-cols-2 gap-2 text-[13px]">
-        <div className="border border-rule bg-paper px-3 py-2.5">
-          <span className="mono-label block text-faint">Fund</span>
+        <div className="rounded-lg bg-stone-50 px-3 py-2.5">
+          <span className="block text-[11.5px] text-faint">งบ</span>
           งบนวัตกรรมชุมชน อบต.
         </div>
-        <div className="border border-rule bg-paper px-3 py-2.5">
-          <span className="mono-label block text-faint">Parts</span>
+        <div className="rounded-lg bg-stone-50 px-3 py-2.5">
+          <span className="block text-[11.5px] text-faint">อะไหล่</span>
           ร้านวัสดุก่อสร้างในตำบล
         </div>
       </div>
@@ -802,15 +767,14 @@ function ConflictPanel() {
   const [focus, setFocus] = useState<Side>(null);
 
   return (
-    <Figure code="FIG. 3.4" title="ลดความขัดแย้ง: แม่ค้ากับเกษตรกรต่างได้ประโยชน์" note="ชี้ที่แต่ละฝ่าย" bodyClassName="p-6">
+    <Figure code="FIG. 3.4" title="แม่ค้ากับเกษตรกรได้อะไรกันคนละฝั่ง" note="ชี้ที่แต่ละฝ่าย" bodyClassName="px-6 pb-6 pt-4">
       <div className="grid grid-cols-12 items-stretch gap-4">
         <PartyCard side="vendor" focus={focus} setFocus={setFocus} />
 
         <div className="col-span-12 flex flex-col justify-center gap-3 md:col-span-4">
           <ExchangeRow label={CONFLICT.vendor.gives} dir="right" on={focus !== 'farmer'} dim={focus === 'farmer'} />
           <ExchangeRow label={CONFLICT.vendor.gets} dir="left" on={focus !== 'farmer'} dim={focus === 'farmer'} />
-          <div className="my-1 border border-ink bg-ink px-4 py-3 text-center text-paper">
-            <span className="mono-label block text-paper/70">Compost pen</span>
+          <div className="my-1 rounded-xl bg-stone-800 px-4 py-3 text-center text-white shadow-md">
             <span className="text-[15px] font-semibold">คอกหมักของชุมชน</span>
           </div>
           <ExchangeRow label={CONFLICT.farmer.gives} dir="left" on={focus !== 'vendor'} dim={focus === 'vendor'} />
@@ -821,9 +785,9 @@ function ConflictPanel() {
       </div>
 
       {/* safeguards */}
-      <div className="mt-6 grid grid-cols-12 gap-5 border-t border-rule pt-5">
+      <div className="mt-6 grid grid-cols-12 gap-5 border-t border-stone-900/[0.06] pt-5">
         <div className="col-span-12 lg:col-span-5">
-          <div className="th-label text-faint">มาตรการป้องกันผลกระทบต่อชาวบ้าน</div>
+          <div className="th-label text-faint">กันไม่ให้ชาวบ้านเดือดร้อน</div>
           <DistanceDiagram />
         </div>
         <ol className="col-span-12 grid gap-3 sm:grid-cols-3 lg:col-span-7">
@@ -831,16 +795,17 @@ function ConflictPanel() {
             <li
               key={s}
               className={cx(
-                'flex flex-col border p-4',
-                i === 2 ? 'border-rust bg-rust-soft' : 'border-rule bg-paper',
+                'flex flex-col rounded-xl p-4',
+                i === 2 ? 'bg-rust-soft ring-1 ring-rust/20' : 'bg-stone-50 ring-1 ring-stone-900/[0.05]',
               )}
             >
-              <span className={cx('mono-label', i === 2 ? 'text-rust' : 'text-faint')}>{`G${i + 1}`}</span>
+              <span className={cx('font-mono text-[12px]', i === 2 ? 'text-rust' : 'text-faint')}>{String(i + 1).padStart(2, '0')}</span>
               <span className={cx('mt-2 text-[15px] leading-relaxed', i === 2 ? 'font-semibold text-ink' : 'text-ink')}>{s}</span>
               {i === 2 ? (
                 <span className="mt-auto pt-3">
-                  <span className="inline-block border-2 border-rust px-3 py-1 font-mono text-[12px] font-semibold tracking-[0.16em] text-rust">
-                    STOP
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-rust px-3 py-1 text-[12px] font-semibold text-white">
+                    <span className="h-2 w-2 rounded-[2px] bg-white" />
+                    หยุดได้ทันที
                   </span>
                 </span>
               ) : null}
@@ -863,13 +828,12 @@ function PartyCard({ side, focus, setFocus }: { side: 'vendor' | 'farmer'; focus
       onFocus={() => setFocus(side)}
       onBlur={() => setFocus(null)}
       className={cx(
-        'col-span-12 border p-5 text-left transition-all duration-300 md:col-span-4',
-        on ? 'border-rust bg-rust-soft' : 'border-rule bg-paper',
+        'col-span-12 rounded-xl p-5 text-left ring-1 transition-all duration-300 md:col-span-4',
+        on ? 'bg-rust-soft ring-rust/25' : 'bg-stone-50 ring-stone-900/[0.05]',
         focus !== null && !on && 'opacity-40',
       )}
     >
-      <span className="mono-label text-rust">{side === 'vendor' ? 'Vendor' : 'Farmer'}</span>
-      <span className="mt-2 block text-[1.4rem] font-semibold">{p.who}</span>
+      <span className="block text-[1.4rem] font-semibold">{p.who}</span>
       <dl className="mt-4 space-y-3 text-[15px]">
         <div>
           <dt className="th-label text-faint">ลงแรง</dt>
@@ -879,7 +843,7 @@ function PartyCard({ side, focus, setFocus }: { side: 'vendor' | 'farmer'; focus
           <dt className="th-label text-faint">ได้รับ</dt>
           <dd className="mt-0.5 font-medium">{p.gets}</dd>
         </div>
-        <div className="border-t border-rule pt-3 text-muted">{p.note}</div>
+        <div className="border-t border-stone-900/[0.06] pt-3 text-muted">{p.note}</div>
       </dl>
     </button>
   );
