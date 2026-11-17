@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Lenis recommended base styles */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+@layer base {
+  html {
+    font-size: 17px;
+  }
+  body {
+    @apply bg-paper font-sans text-ink antialiased;
+    /* architectural drafting grid */
+    background-image:
+      linear-gradient(to right, rgba(229, 227, 220, 0.55) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(229, 227, 220, 0.55) 1px, transparent 1px);
+    background-size: 96px 96px;
+  }
+  ::selection {
+    @apply bg-rust-soft text-ink;
+  }
+}
+
+@layer components {
+  /* Latin-only labels (FIG. 01, SEC. 01, D1 ...) */
+  .mono-label {
+    @apply font-mono text-[11px] font-medium uppercase tracking-[0.16em];
+  }
+  /* Thai labels: never letter-space Thai script */
+  .th-label {
+    @apply font-sans text-[13px] font-medium tracking-normal;
+  }
+}
