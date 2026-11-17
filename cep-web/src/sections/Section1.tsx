@@ -493,20 +493,26 @@ function DataPlanGrid() {
         ทั้ง 4 ด้านจะเก็บตอนลงพื้นที่จริง ใช้ยืนยันว่าปัญหาเป็นอย่างที่เห็น และเก็บไว้เป็นค่าตั้งต้นเพื่อเทียบผลทีหลัง
       </Lead>
 
-      <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-        {DATA_PLAN.map((d, i) => (
-          <Reveal key={d.code} delay={0.06 * i} className="h-full">
-            <Figure code={d.code} title={d.domain} className="h-full" bodyClassName="flex h-[calc(100%-3.25rem)] flex-col px-6 pb-6 pt-3">
-              <span className="inline-flex self-start rounded-full bg-rust-soft px-2.5 py-0.5 text-[12.5px] font-medium text-rust">{d.method}</span>
-              <p className="mt-3 text-sm leading-relaxed text-muted">{d.detail}</p>
-              <div className="mt-auto flex items-center gap-2 pt-5 text-[12.5px] text-faint">
-                <span className="h-1.5 w-1.5 rounded-full bg-amber-500/80" />
-                รอลงพื้นที่
-              </div>
-            </Figure>
-          </Reveal>
-        ))}
-      </div>
+      <Reveal className="mt-6">
+        <Figure code="FIG. 03" title="เก็บอะไร ด้วยวิธีไหน" note="ยังไม่ได้ลงพื้นที่" bodyClassName="px-6 pb-6 pt-3">
+          <div className="grid gap-y-6 md:grid-cols-2 md:gap-x-8 xl:grid-cols-4 xl:gap-x-0 xl:divide-x xl:divide-stone-900/[0.08]">
+            {DATA_PLAN.map((d, i) => (
+              <motion.section
+                key={d.code}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.4 }}
+                transition={{ duration: 0.55, ease: EASE, delay: 0.07 * i }}
+                className="xl:px-6 xl:first:pl-0 xl:last:pr-0"
+              >
+                <h4 className="text-[1.05rem] font-semibold text-ink">{d.domain}</h4>
+                <div className="mt-0.5 text-[13px] text-rust">{d.method}</div>
+                <p className="mt-2.5 text-sm leading-relaxed text-muted">{d.detail}</p>
+              </motion.section>
+            ))}
+          </div>
+        </Figure>
+      </Reveal>
     </div>
   );
 }

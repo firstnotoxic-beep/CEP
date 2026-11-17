@@ -507,24 +507,33 @@ function LimeSim() {
 
 function ConstraintGrid() {
   return (
-    <div className="mt-8 grid grid-cols-1 gap-5 lg:grid-cols-3">
-      {CONSTRAINTS.map((c, i) => (
-        <Reveal key={c.code} delay={0.08 * i} className="h-full">
-          <Figure code={`FIG. 3.3-${c.code}`} title={c.topic} className="h-full">
-            <div className="text-[1.3rem] font-semibold leading-snug">{c.headline}</div>
-            <ul className="mt-4 space-y-2">
-              {c.points.map((p) => (
-                <li key={p} className="flex gap-3 text-[15px] leading-relaxed text-muted">
-                  <span className="mt-[10px] h-1.5 w-1.5 shrink-0 rounded-full bg-rust" />
-                  <span>{p}</span>
-                </li>
-              ))}
-            </ul>
-            <ConstraintVisual c={c} />
-          </Figure>
-        </Reveal>
-      ))}
-    </div>
+    <Reveal className="mt-8">
+      <Figure code="FIG. 3.3" title="งบ เวลา และวัตถุดิบ" bodyClassName="px-6 pb-6 pt-3">
+        <div className="grid gap-y-8 lg:grid-cols-3 lg:divide-x lg:divide-stone-900/[0.08]">
+          {CONSTRAINTS.map((c, i) => (
+            <motion.section
+              key={c.code}
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.4 }}
+              transition={{ duration: 0.55, ease: EASE, delay: 0.08 * i }}
+              className="lg:px-6 lg:first:pl-0 lg:last:pr-0"
+            >
+              <div className="text-[13px] text-rust">{c.topic}</div>
+              <h4 className="mt-1 text-[1.2rem] font-semibold leading-snug">{c.headline}</h4>
+              <ul className="mt-3 space-y-1.5">
+                {c.points.map((p) => (
+                  <li key={p} className="text-[14.5px] leading-relaxed text-muted">
+                    {p}
+                  </li>
+                ))}
+              </ul>
+              <ConstraintVisual c={c} />
+            </motion.section>
+          ))}
+        </div>
+      </Figure>
+    </Reveal>
   );
 }
 
@@ -604,27 +613,16 @@ function ConflictPanel() {
           <div className="th-label text-faint">กันไม่ให้ชาวบ้านเดือดร้อน</div>
           <DistanceDiagram />
         </div>
-        <ol className="col-span-12 grid gap-3 sm:grid-cols-3 lg:col-span-7">
-          {CONFLICT.safeguards.map((s, i) => (
-            <li
-              key={s}
-              className={cx(
-                'flex flex-col rounded-xl p-4',
-                i === 2 ? 'bg-rust-soft ring-1 ring-rust/20' : 'bg-stone-50 ring-1 ring-stone-900/[0.05]',
-              )}
-            >
-              <span className={cx('font-mono text-[12px]', i === 2 ? 'text-rust' : 'text-faint')}>{String(i + 1).padStart(2, '0')}</span>
-              <span className={cx('mt-2 text-[15px] leading-relaxed', i === 2 ? 'font-semibold text-ink' : 'text-ink')}>{s}</span>
-              {i === 2 ? (
-                <span className="mt-auto pt-3">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-rust px-3 py-1 text-[12px] font-semibold text-white">
-                    <span className="h-2 w-2 rounded-[2px] bg-white" />
-                    หยุดได้ทันที
-                  </span>
-                </span>
-              ) : null}
-            </li>
-          ))}
+        <ol className="col-span-12 self-center lg:col-span-7">
+          {CONFLICT.safeguards.map((s, i) => {
+            const last = i === CONFLICT.safeguards.length - 1;
+            return (
+              <li key={s} className="grid grid-cols-[2.25rem_1fr] items-baseline border-t border-stone-900/[0.07] py-3 first:border-t-0">
+                <span className={cx('font-mono text-[13px]', last ? 'text-rust' : 'text-faint')}>{String(i + 1).padStart(2, '0')}</span>
+                <span className={cx('text-[16px] leading-relaxed', last ? 'font-semibold text-rust' : 'text-ink')}>{s}</span>
+              </li>
+            );
+          })}
         </ol>
       </div>
     </Figure>
@@ -634,9 +632,9 @@ function ConflictPanel() {
 /** One drawing instead of mirrored cards: each flow is labelled once, on its own arrow. */
 function ExchangeDiagram({ focus, setFocus }: { focus: Side; setFocus: (s: Side) => void }) {
   const flows: Array<{ side: 'vendor' | 'farmer'; d: string; lx: number; ly: number; text: string; sub?: string }> = [
-    { side: 'vendor', d: 'M214 112 C 290 58, 340 58, 400 104', lx: 306, ly: 52, text: CONFLICT.vendor.gives, sub: CONFLICT.vendor.note },
+    { side: 'vendor', d: 'M214 112 C 290 58, 340 58, 400 104', lx: 306, ly: 36, text: CONFLICT.vendor.gives, sub: CONFLICT.vendor.note },
     { side: 'vendor', d: 'M400 176 C 340 228, 290 228, 214 182', lx: 306, ly: 250, text: CONFLICT.vendor.gets },
-    { side: 'farmer', d: 'M748 112 C 672 58, 622 58, 562 104', lx: 656, ly: 52, text: CONFLICT.farmer.gives },
+    { side: 'farmer', d: 'M748 112 C 672 58, 622 58, 562 104', lx: 656, ly: 36, text: CONFLICT.farmer.gives },
     { side: 'farmer', d: 'M562 176 C 622 228, 672 228, 748 182', lx: 656, ly: 250, text: CONFLICT.farmer.gets },
   ];
 
