@@ -595,22 +595,8 @@ function ConflictPanel() {
   const [focus, setFocus] = useState<Side>(null);
 
   return (
-    <Figure code="FIG. 3.4" title="แม่ค้ากับเกษตรกรได้อะไรกันคนละฝั่ง" note="ชี้ที่แต่ละฝ่าย" bodyClassName="px-6 pb-6 pt-4">
-      <div className="grid grid-cols-12 items-stretch gap-4">
-        <PartyCard side="vendor" focus={focus} setFocus={setFocus} />
-
-        <div className="col-span-12 flex flex-col justify-center gap-3 md:col-span-4">
-          <ExchangeRow label={CONFLICT.vendor.gives} dir="right" on={focus !== 'farmer'} dim={focus === 'farmer'} />
-          <ExchangeRow label={CONFLICT.vendor.gets} dir="left" on={focus !== 'farmer'} dim={focus === 'farmer'} />
-          <div className="my-1 rounded-xl bg-stone-800 px-4 py-3 text-center text-white shadow-md">
-            <span className="text-[15px] font-semibold">คอกหมักของชุมชน</span>
-          </div>
-          <ExchangeRow label={CONFLICT.farmer.gives} dir="left" on={focus !== 'vendor'} dim={focus === 'vendor'} />
-          <ExchangeRow label={CONFLICT.farmer.gets} dir="right" on={focus !== 'vendor'} dim={focus === 'vendor'} />
-        </div>
-
-        <PartyCard side="farmer" focus={focus} setFocus={setFocus} />
-      </div>
+    <Figure code="FIG. 3.4" title="แม่ค้ากับเกษตรกรได้อะไรกันคนละฝั่ง" note="ชี้ที่แม่ค้าหรือเกษตรกร" bodyClassName="px-6 pb-6 pt-2">
+      <ExchangeDiagram focus={focus} setFocus={setFocus} />
 
       {/* safeguards */}
       <div className="mt-6 grid grid-cols-12 gap-5 border-t border-stone-900/[0.06] pt-5">
@@ -645,47 +631,105 @@ function ConflictPanel() {
   );
 }
 
-function PartyCard({ side, focus, setFocus }: { side: 'vendor' | 'farmer'; focus: Side; setFocus: (s: Side) => void }) {
-  const p = CONFLICT[side];
-  const on = focus === side;
-  return (
-    <button
-      type="button"
-      onMouseEnter={() => setFocus(side)}
-      onMouseLeave={() => setFocus(null)}
-      onFocus={() => setFocus(side)}
-      onBlur={() => setFocus(null)}
-      className={cx(
-        'col-span-12 rounded-xl p-5 text-left ring-1 transition-all duration-300 md:col-span-4',
-        on ? 'bg-rust-soft ring-rust/25' : 'bg-stone-50 ring-stone-900/[0.05]',
-        focus !== null && !on && 'opacity-40',
-      )}
-    >
-      <span className="block text-[1.4rem] font-semibold">{p.who}</span>
-      <dl className="mt-4 space-y-3 text-[15px]">
-        <div>
-          <dt className="th-label text-faint">ลงแรง</dt>
-          <dd className="mt-0.5 font-medium">{p.gives}</dd>
-        </div>
-        <div>
-          <dt className="th-label text-faint">ได้รับ</dt>
-          <dd className="mt-0.5 font-medium">{p.gets}</dd>
-        </div>
-        <div className="border-t border-stone-900/[0.06] pt-3 text-muted">{p.note}</div>
-      </dl>
-    </button>
-  );
-}
+/** One drawing instead of mirrored cards: each flow is labelled once, on its own arrow. */
+function ExchangeDiagram({ focus, setFocus }: { focus: Side; setFocus: (s: Side) => void }) {
+  const flows: Array<{ side: 'vendor' | 'farmer'; d: string; lx: number; ly: number; text: string; sub?: string }> = [
+    { side: 'vendor', d: 'M214 112 C 290 58, 340 58, 400 104', lx: 306, ly: 52, text: CONFLICT.vendor.gives, sub: CONFLICT.vendor.note },
+    { side: 'vendor', d: 'M400 176 C 340 228, 290 228, 214 182', lx: 306, ly: 250, text: CONFLICT.vendor.gets },
+    { side: 'farmer', d: 'M748 112 C 672 58, 622 58, 562 104', lx: 656, ly: 52, text: CONFLICT.farmer.gives },
+    { side: 'farmer', d: 'M562 176 C 622 228, 672 228, 748 182', lx: 656, ly: 250, text: CONFLICT.farmer.gets },
+  ];
 
-function ExchangeRow({ label, dir, on, dim }: { label: string; dir: 'left' | 'right'; on: boolean; dim: boolean }) {
+  const party = (side: 'vendor' | 'farmer') => ({
+    onMouseEnter: () => setFocus(side),
+    onMouseLeave: () => setFocus(null),
+    style: { cursor: 'pointer', transition: 'opacity .3s', opacity: focus && focus !== side ? 0.35 : 1 },
+  });
+
   return (
-    <div className={cx('flex items-center gap-2 transition-opacity duration-300', dim && 'opacity-30')}>
-      {dir === 'left' ? <span className={cx('text-lg leading-none', on ? 'text-rust' : 'text-faint')}>←</span> : null}
-      <span className="h-px flex-1 bg-rule-strong" />
-      <span className="text-[14px] font-medium text-ink">{label}</span>
-      <span className="h-px flex-1 bg-rule-strong" />
-      {dir === 'right' ? <span className={cx('text-lg leading-none', on ? 'text-rust' : 'text-faint')}>→</span> : null}
-    </div>
+    <svg viewBox="0 0 962 290" className="h-auto w-full" role="img" aria-label="แม่ค้าแยกถังให้คอกหมัก ได้หน้าร้านสะอาด เกษตรกรลงแรงดูแลคอก ได้ปุ๋ย">
+      <defs>
+        {['ink', 'rust'].map((k) => (
+          <marker key={k} id={`xa-${k}`} viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 1 L9 5 L0 9" fill="none" stroke={k === 'rust' ? '#9A4A24' : '#8D9089'} strokeWidth="1.6" />
+          </marker>
+        ))}
+      </defs>
+
+      {/* ground */}
+      <line x1="20" y1="190" x2="942" y2="190" stroke="#D9D5CB" />
+
+      {/* vendor: shop front + two lidded bins */}
+      <g {...party('vendor')}>
+        <rect x="58" y="98" width="148" height="92" fill="#FFFFFF" stroke="#141615" strokeWidth="1.2" />
+        <path d="M50 98 L214 98 L202 72 L62 72 Z" fill="#F3E9E1" stroke="#141615" strokeWidth="1.2" />
+        {[0, 1, 2, 3, 4, 5].map((i) => (
+          <line key={i} x1={78 + i * 22} y1="72" x2={74 + i * 22} y2="98" stroke="#9A4A24" strokeOpacity="0.35" />
+        ))}
+        <rect x="76" y="150" width="30" height="40" rx="3" fill="#ECEAE4" stroke="#141615" />
+        <rect x="112" y="150" width="30" height="40" rx="3" fill="#ECEAE4" stroke="#141615" />
+        <rect x="73" y="145" width="36" height="6" rx="2" fill="#2E2F2C" />
+        <rect x="109" y="145" width="36" height="6" rx="2" fill="#2E2F2C" />
+        <text x="132" y="224" textAnchor="middle" fontSize="18" fontWeight="600" fill="#141615">
+          แม่ค้า
+        </text>
+      </g>
+
+      {/* compost pen */}
+      <g>
+        <path d="M414 190 V122 H548 V190" fill="none" stroke="#141615" strokeWidth="1.2" />
+        <path d="M402 122 L481 94 L560 122" fill="none" stroke="#141615" strokeWidth="1.2" />
+        <path d="M426 190 C 440 150, 520 150, 536 190 Z" fill="#D9CDB4" stroke="#141615" />
+        <line x1="452" y1="190" x2="452" y2="142" stroke="#8D9089" strokeDasharray="2 3" />
+        <line x1="510" y1="190" x2="510" y2="142" stroke="#8D9089" strokeDasharray="2 3" />
+        <text x="481" y="224" textAnchor="middle" fontSize="16" fontWeight="600" fill="#141615">
+          คอกหมักของชุมชน
+        </text>
+      </g>
+
+      {/* farmer: raised bed with seedlings */}
+      <g {...party('farmer')}>
+        <path d="M758 190 L780 160 L882 160 L904 190 Z" fill="#8C735C" stroke="#141615" strokeWidth="1.2" />
+        {[798, 831, 864].map((x) => (
+          <g key={x}>
+            <line x1={x} y1="160" x2={x} y2="128" stroke="#55603A" strokeWidth="1.6" />
+            <ellipse cx={x - 7} cy="136" rx="8" ry="4" fill="#7C8A55" transform={`rotate(-25 ${x - 7} 136)`} />
+            <ellipse cx={x + 7} cy="128" rx="8" ry="4" fill="#7C8A55" transform={`rotate(25 ${x + 7} 128)`} />
+          </g>
+        ))}
+        <text x="831" y="224" textAnchor="middle" fontSize="18" fontWeight="600" fill="#141615">
+          เกษตรกร
+        </text>
+      </g>
+
+      {/* flows */}
+      {flows.map((f) => {
+        const lit = focus === f.side;
+        const dim = focus !== null && !lit;
+        return (
+          <g key={f.d} style={{ transition: 'opacity .3s' }} opacity={dim ? 0.2 : 1}>
+            <motion.path
+              d={f.d}
+              fill="none"
+              stroke={lit ? '#9A4A24' : '#8D9089'}
+              strokeWidth={lit ? 1.8 : 1.3}
+              strokeDasharray="5 6"
+              markerEnd={`url(#xa-${lit ? 'rust' : 'ink'})`}
+              animate={{ strokeDashoffset: ['0', '-22'] }}
+              transition={{ duration: 1.2, repeat: Infinity, ease: 'linear' }}
+            />
+            <text x={f.lx} y={f.ly} textAnchor="middle" fontSize="15" fontWeight="500" fill={lit ? '#9A4A24' : '#141615'}>
+              {f.text}
+            </text>
+            {f.sub ? (
+              <text x={f.lx} y={f.ly + 18} textAnchor="middle" fontSize="12.5" fill="#8D9089">
+                {f.sub}
+              </text>
+            ) : null}
+          </g>
+        );
+      })}
+    </svg>
   );
 }
 

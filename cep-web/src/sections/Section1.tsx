@@ -100,15 +100,15 @@ function FlowNode({ title, sub, tone = 'plain', delay }: { title: string; sub: s
       viewport={{ once: true, amount: 0.6 }}
       transition={{ duration: 0.6, ease: EASE, delay }}
       className={cx(
-        'flex h-full flex-col justify-center rounded-xl px-3.5 py-3',
-        tone === 'plain' && 'bg-white ring-1 ring-stone-900/[0.07]',
-        tone === 'rust' && 'bg-rust-soft ring-1 ring-rust/15',
-        tone === 'olive' && 'bg-[#EEF0E6] ring-1 ring-olive/15',
-        tone === 'out' && 'bg-stone-900 text-white shadow-md',
+        'flex flex-col border-l-2 py-1 pl-3',
+        tone === 'plain' && 'border-stone-300',
+        tone === 'rust' && 'border-rust',
+        tone === 'olive' && 'border-olive',
+        tone === 'out' && 'border-l-[3px] border-stone-900',
       )}
     >
-      <span className={cx('text-[14px] font-semibold leading-snug', tone === 'out' ? 'text-white' : 'text-ink')}>{title}</span>
-      <span className={cx('mt-1 text-[12px] leading-snug', tone === 'out' ? 'text-stone-300' : 'text-muted')}>{sub}</span>
+      <span className={cx('leading-snug text-ink', tone === 'out' ? 'text-[15.5px] font-bold' : 'text-[14px] font-semibold')}>{title}</span>
+      <span className="mt-0.5 text-[12px] leading-snug text-muted">{sub}</span>
     </motion.div>
   );
 }
@@ -120,10 +120,13 @@ function Joint({ kind }: { kind: 'line' | 'split' | 'merge' }) {
       : kind === 'split'
         ? 'M0 50 C12 50, 12 25, 24 25 M0 50 C12 50, 12 75, 24 75'
         : 'M0 25 C12 25, 12 50, 24 50 M0 75 C12 75, 12 50, 24 50';
+  // absolutely positioned so the SVG takes the grid cell's height instead of setting it
   return (
-    <svg viewBox="0 0 24 100" preserveAspectRatio="none" className="h-full w-full" aria-hidden="true">
-      <path d={d} fill="none" stroke="#B9B5AA" strokeWidth={1.25} vectorEffect="non-scaling-stroke" />
-    </svg>
+    <div className="relative h-full w-full">
+      <svg viewBox="0 0 24 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full" aria-hidden="true">
+        <path d={d} fill="none" stroke="#B9B5AA" strokeWidth={1.25} vectorEffect="non-scaling-stroke" />
+      </svg>
+    </div>
   );
 }
 
@@ -135,7 +138,7 @@ function SystemFlow() {
         <span className="mono-label text-faint">0 W · ไม่ใช้ไฟฟ้า</span>
       </div>
       <div
-        className="mt-5 grid h-[200px] gap-y-3"
+        className="mt-6 grid h-[150px]"
         style={{ gridTemplateColumns: '1fr 28px 1fr 28px 1.1fr 28px 1.15fr 28px 1fr', gridTemplateRows: '1fr 1fr' }}
       >
         <div className="row-span-2 self-center" style={{ gridColumn: 1, gridRow: '1 / 3' }}>
@@ -150,10 +153,10 @@ function SystemFlow() {
         <div style={{ gridColumn: 4, gridRow: '1 / 3' }}>
           <Joint kind="split" />
         </div>
-        <div style={{ gridColumn: 5, gridRow: 1 }}>
+        <div className="self-center" style={{ gridColumn: 5, gridRow: 1 }}>
           <FlowNode title="คอกหมักเติมอากาศ" sub="เปลือกกุ้ง : วัสดุแห้ง 1 : 2" tone="rust" delay={0.16} />
         </div>
-        <div style={{ gridColumn: 5, gridRow: 2 }}>
+        <div className="self-center" style={{ gridColumn: 5, gridRow: 2 }}>
           <FlowNode title="ล้าง ผึ่ง ทุบหยาบ" sub="เปลือกหอย" tone="olive" delay={0.16} />
         </div>
         <div style={{ gridColumn: 6, gridRow: 1 }}>
@@ -162,10 +165,10 @@ function SystemFlow() {
         <div style={{ gridColumn: 6, gridRow: 2 }}>
           <Joint kind="line" />
         </div>
-        <div style={{ gridColumn: 7, gridRow: 1 }}>
+        <div className="self-center" style={{ gridColumn: 7, gridRow: 1 }}>
           <FlowNode title="ปุ๋ยหมัก" sub="ย่อยแบบใช้อากาศ ไม่เหม็นเน่า" tone="rust" delay={0.24} />
         </div>
-        <div style={{ gridColumn: 7, gridRow: 2 }}>
+        <div className="self-center" style={{ gridColumn: 7, gridRow: 2 }}>
           <FlowNode title="โคกยกสูง + น้ำหมักแคลเซียม" sub="คลุมหน้าดิน รดเสริม" tone="olive" delay={0.24} />
         </div>
         <div style={{ gridColumn: 8, gridRow: '1 / 3' }}>
