@@ -43,13 +43,17 @@ function KpiPanel() {
         {KPIS.map((kpi, i) => {
           const on = i === active;
           return (
-            <button
+            <motion.button
               key={kpi.code}
               type="button"
               onClick={() => setActive(i)}
               onMouseEnter={() => setActive(i)}
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.4 }}
+              transition={{ duration: 0.55, ease: EASE, delay: 0.07 * i }}
               className={cx(
-                'flex min-h-[176px] flex-col rounded-xl p-4 text-left ring-1 transition-all duration-300',
+                'flex min-h-[176px] flex-col rounded-xl p-4 text-left ring-1 transition-[background-color,box-shadow] duration-300',
                 on ? 'bg-white shadow-[0_10px_30px_-14px_rgba(20,22,21,0.3)] ring-stone-900/15' : 'bg-stone-50 ring-stone-900/[0.05] hover:ring-stone-900/15',
               )}
             >
@@ -75,7 +79,7 @@ function KpiPanel() {
                 animate={{ scaleX: on ? 1 : 0 }}
                 transition={{ duration: 0.4, ease: EASE }}
               />
-            </button>
+            </motion.button>
           );
         })}
       </div>

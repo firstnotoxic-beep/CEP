@@ -1,8 +1,17 @@
 import { Suspense, lazy, useEffect, useRef, useState } from 'react';
-import { AnimatePresence, motion, useInView } from 'framer-motion';
-import { CONCEPT, COCREATION_STEPS, FIT_REASONS, PEOPLE, SOLUTION_STEPS, type Scene, type SolutionStep } from '../content';
+import { AnimatePresence, motion, useInView, useScroll, useSpring } from 'framer-motion';
+import {
+  CONCEPT,
+  COCREATION_STEPS,
+  FIT_REASONS,
+  PEOPLE,
+  SOLUTION_STEPS,
+  type CoCreationStep,
+  type Scene,
+  type SolutionStep,
+} from '../content';
 import type { ModelId } from '../components/Cutaway3D';
-import { BTN_GHOST, BTN_SOLID, EASE, Figure, INSET, Lead, PillTabs, Reveal, Section, SourceTag, cx } from '../components/ui';
+import { BTN_GHOST, EASE, Figure, Lead, PillTabs, Reveal, Section, SourceTag, cx } from '../components/ui';
 
 const Cutaway3D = lazy(() => import('../components/Cutaway3D'));
 
@@ -213,99 +222,86 @@ function FitAndProcess() {
   );
 }
 
-/* ---------- FIG. 2.5 co-creation timeline ---------- */
+/* ---------- FIG. 2.5 co-creation timeline: the line fills as you scroll ---------- */
+
+const TEAL = '#0F766E';
 
 function CoCreationTimeline() {
-  const [active, setActive] = useState(0);
-  const last = COCREATION_STEPS.length - 1;
-  const step = COCREATION_STEPS[active];
+  const listRef = useRef<HTMLOListElement>(null);
+  const { scrollYProgress } = useScroll({ target: listRef, offset: ['start 72%', 'end 55%'] });
+  const fill = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.3 });
 
   return (
-    <Figure code="FIG. 2.5" title="ทำงานกับชุมชน 5 ขั้น" note="กดแต่ละขั้นเพื่อดูรายละเอียด" bodyClassName="px-6 pb-6 pt-5">
-      {/* rail */}
-      <div className="relative">
-        <div className="absolute left-[10%] right-[10%] top-[19px] h-[2px] rounded-full bg-stone-200" />
-        <motion.div
-          className="absolute left-[10%] top-[19px] h-[2px] origin-left rounded-full bg-rust"
-          style={{ width: '80%' }}
-          initial={false}
-          animate={{ scaleX: active / last }}
-          transition={{ duration: 0.6, ease: EASE }}
-        />
-        <ol className="relative grid grid-cols-5">
-          {COCREATION_STEPS.map((s, i) => {
-            const done = i <= active;
-            return (
-              <li key={s.short} className="flex flex-col items-center px-2 text-center">
-                <button
-                  type="button"
-                  onClick={() => setActive(i)}
-                  aria-current={i === active ? 'step' : undefined}
-                  className={cx(
-                    'grid h-10 w-10 place-items-center rounded-full font-mono text-[12px] ring-1 transition-all duration-300',
-                    i === active
-                      ? 'bg-rust text-white shadow-[0_6px_16px_-6px_rgba(154,74,36,0.6)] ring-rust'
-                      : done
-                        ? 'bg-rust-soft text-rust ring-rust/30'
-                        : 'bg-white text-stone-600 ring-stone-900/10 hover:ring-stone-900/30',
-                  )}
-                >
-                  {i + 1}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActive(i)}
-                  className={cx('mt-3 text-[14px] font-medium leading-snug transition-colors', i === active ? 'text-ink' : 'text-muted hover:text-ink')}
-                >
-                  {s.short}
-                </button>
-              </li>
-            );
-          })}
-        </ol>
+    <Figure code="FIG. 2.5" title="ทำงานกับชุมชน 5 ขั้น" note="เลื่อนลงเพื่อเดินตามขั้นตอน" bodyClassName="px-6 pb-8 pt-5">
+      <div className="mb-6 flex items-center gap-2">
+        <SourceTag kind="proposal" />
+        <span className="text-[13px] text-faint">ทุกขั้นทำร่วมกับคนในพื้นที่ ไม่ได้ทำแทน</span>
       </div>
 
-      {/* detail */}
-      <div className={cx(INSET, 'mt-6 grid grid-cols-12 gap-5 p-5')}>
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={active}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.35, ease: EASE }}
-            className="col-span-12 grid grid-cols-12 gap-5 lg:col-span-10"
-          >
-            <div className="col-span-12 md:col-span-7">
-              <div className="flex items-center gap-2">
-                <span className="th-label text-faint">ขั้นที่ {active + 1}</span>
-                <SourceTag kind="proposal" />
-              </div>
-              <p className="mt-2 text-[17px] leading-[1.8] text-ink">{step.detail}</p>
-            </div>
-            <div className="col-span-12 md:col-span-5">
-              <div className="th-label text-faint">ทำร่วมกับ</div>
-              <ul className="mt-2 flex flex-wrap gap-1.5">
-                <li className="rounded-full bg-stone-200/70 px-2.5 py-1 text-[13px] text-ink">คณะผู้จัดทำ</li>
-                {step.people.map((p) => (
-                  <li key={p} className="rounded-full bg-white px-2.5 py-1 text-[13px] text-ink ring-1 ring-stone-900/10">
-                    {PEOPLE[p].name}
-                    <span className="ml-1.5 text-muted">· {PEOPLE[p].role}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </motion.div>
-        </AnimatePresence>
-        <div className="col-span-12 flex items-start justify-end gap-2 lg:col-span-2">
-          <button type="button" onClick={() => setActive((a) => Math.max(0, a - 1))} disabled={active === 0} className={BTN_GHOST}>
-            ก่อนหน้า
-          </button>
-          <button type="button" onClick={() => setActive((a) => Math.min(last, a + 1))} disabled={active === last} className={BTN_SOLID}>
-            ถัดไป
-          </button>
-        </div>
+      <div className="relative">
+        {/* rail + scroll-linked fill */}
+        <span className="absolute bottom-6 left-[19px] top-5 w-[2px] rounded-full bg-stone-200" aria-hidden="true" />
+        <motion.span
+          aria-hidden="true"
+          className="absolute bottom-6 left-[19px] top-5 w-[2px] origin-top rounded-full"
+          style={{ scaleY: fill, background: TEAL }}
+        />
+
+        <ol ref={listRef} className="relative space-y-3">
+          {COCREATION_STEPS.map((s, i) => (
+            <TimelineStep key={s.short} index={i} step={s} />
+          ))}
+        </ol>
       </div>
     </Figure>
   );
 }
+
+function TimelineStep({ index, step }: { index: number; step: CoCreationStep }) {
+  const ref = useRef<HTMLLIElement>(null);
+  // lights up once the reader's eye line (a bit above centre) reaches the step
+  const reached = useInView(ref, { margin: '0px 0px -45% 0px' });
+
+  return (
+    <li ref={ref} className="relative grid grid-cols-[40px_1fr] gap-5">
+      <motion.span
+        className="relative z-10 mt-3 grid h-10 w-10 place-items-center rounded-full font-mono text-[13px] ring-1"
+        animate={{
+          backgroundColor: reached ? TEAL : '#FFFFFF',
+          color: reached ? '#FFFFFF' : '#78716C',
+          scale: reached ? 1 : 0.92,
+        }}
+        style={{ ['--tw-ring-color' as string]: reached ? TEAL : 'rgba(28,25,23,0.12)' }}
+        transition={{ duration: 0.35, ease: EASE }}
+      >
+        {index + 1}
+      </motion.span>
+
+      <motion.div
+        initial={{ opacity: 0, y: 14 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.5 }}
+        transition={{ duration: 0.6, ease: EASE }}
+        className={cx(
+          'grid gap-4 rounded-xl p-5 transition-colors duration-500 md:grid-cols-[1.4fr_1fr]',
+          reached ? 'bg-white shadow-[0_10px_30px_-16px_rgba(20,22,21,0.25)] ring-1 ring-stone-900/[0.07]' : 'bg-stone-50 ring-1 ring-stone-900/[0.04]',
+        )}
+      >
+        <div>
+          <h4 className="text-[17px] font-semibold leading-snug text-ink">{step.short}</h4>
+          <p className="mt-1.5 text-[15px] leading-[1.75] text-muted">{step.detail}</p>
+        </div>
+        <ul className="flex flex-wrap content-start gap-1.5">
+          <li className="rounded-full bg-stone-200/70 px-2.5 py-1 text-[12.5px] text-ink">คณะผู้จัดทำ</li>
+          {step.people.map((p) => (
+            <li key={p} className="rounded-full bg-white px-2.5 py-1 text-[12.5px] text-ink ring-1 ring-stone-900/10">
+              {PEOPLE[p].name}
+              <span className="ml-1 text-muted">· {PEOPLE[p].role}</span>
+            </li>
+          ))}
+        </ul>
+      </motion.div>
+    </li>
+  );
+}
+

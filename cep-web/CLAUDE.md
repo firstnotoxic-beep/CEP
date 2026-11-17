@@ -32,9 +32,11 @@ Stack: Vite 5 + React 18 + TypeScript (strict) + Tailwind v3 + Framer Motion 11 
 - `src/components/ui.tsx` — Section, Lead, Figure, SpotlightCard, PillTabs, SourceTag, ScrollProgress, Reveal, CountUp
 - `src/components/ui/container-scroll-animation.tsx` — กรอบเอียงแล้วตั้งตรงตามสกรอลล์ (หน้าปก)
 - `src/components/Cutaway3D.tsx` — โมเดล 3D ของ SIM. 2.1–2.3 (โหลดแบบ lazy)
+- `src/components/SoilCore3D.tsx` — แท่งดินตัดขวาง 3D ของ SIM. 3.1 (saline / sodic / gypsum) โหลดแบบ lazy
+- `src/components/Callout3D.tsx` — ป้ายชี้ `<Html>` ที่ใช้ร่วมกันในโมเดล 3D ทั้งสองไฟล์
 - `src/sections/Section1.tsx` — หมวด 1
-- `src/sections/Section2.tsx` — หมวด 2 (sticky split + 3D, FIG. 2.5 เส้นเวลา 5 ขั้นแบบกดได้)
-- `src/sections/Section3.tsx` — หมวด 3: SIM. 3.1 ดินเค็ม/โซดิก + ยิปซัม (SVG), SIM. 3.2 ปูนขาว vs แผนสำรอง (กราฟ NH₃–pH), FIG. 3.3 ข้อจำกัด, FIG. 3.4 ลดความขัดแย้ง
+- `src/sections/Section2.tsx` — หมวด 2 (sticky split + 3D, FIG. 2.5 ไทม์ไลน์แนวตั้ง เส้นเขียวเติมตามการสกรอลล์)
+- `src/sections/Section3.tsx` — หมวด 3: SIM. 3.1 ดินเค็ม/โซดิก + ยิปซัม (3D), SIM. 3.2 ปูนขาว vs แผนสำรอง (กราฟ NH₃–pH), FIG. 3.3 ข้อจำกัด, FIG. 3.4 ลดความขัดแย้ง
 - `src/sections/Section4.tsx` — หมวด 4: FIG. 4.1 KPI 5 ข้อ (ยังไม่มีค่า แสดง "รอเก็บค่าจริง"), FIG. 4.2 โมเดลส่งมอบ, FIG. 4.3 กองทุนหมุนเวียน
 - `src/sections/Section5.tsx` — สรุป + Research Team & Advisor
 

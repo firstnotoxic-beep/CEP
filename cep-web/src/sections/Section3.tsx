@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { Suspense, lazy, useRef, useState } from 'react';
+import { AnimatePresence, motion, useInView } from 'framer-motion';
+import type { SoilState } from '../components/SoilCore3D';
 import {
   BACKUP_TRIGGER,
   CONFLICT,
@@ -15,6 +16,8 @@ import {
   type Scene,
 } from '../content';
 import { BTN_GHOST, EASE, Figure, INSET, Lead, PillTabs, Reveal, Section, SourceTag, cx } from '../components/ui';
+
+const SoilCore3D = lazy(() => import('../components/SoilCore3D'));
 
 export default function Section3({ scene }: { scene: Scene }) {
   return (
@@ -41,198 +44,22 @@ export default function Section3({ scene }: { scene: Scene }) {
    SIM. 3.1 — soil classification & the role of gypsum
    ===================================================================== */
 
-type SoilState = 'saline' | 'sodic' | 'gypsum';
-
-type Pose = { x: number; y: number; r: number };
-
-const PLATELETS = 18;
-
-// sodic: platelets dispersed evenly and clogging the pore space
-const DISPERSED: Pose[] = Array.from({ length: PLATELETS }, (_, i) => {
-  const col = i % 6;
-  const row = Math.floor(i / 6);
-  return {
-    x: 60 + col * 88 + (row % 2 ? 22 : 0),
-    y: 95 + row * 78 + ((col * 7) % 5) * 3,
-    r: ((i * 37) % 17) - 8,
-  };
-});
-
-// saline / after gypsum: platelets flocculated into aggregates with open pores between
-const CLUSTERS = [
-  { x: 135, y: 125, r: -10 },
-  { x: 410, y: 115, r: 8 },
-  { x: 275, y: 235, r: -3 },
-];
-const AGGREGATED: Pose[] = Array.from({ length: PLATELETS }, (_, i) => {
-  const c = CLUSTERS[i % 3];
-  const k = Math.floor(i / 3);
-  return { x: c.x + (k % 2 ? 7 : -7), y: c.y + (k - 2.5) * 13, r: c.r + (k % 2 ? 3 : -3) };
-});
-
-type IonKind = 'Na' | 'Ca';
-
-function attachedIon(state: SoilState, i: number, side: 0 | 1): IonKind {
-  if (state === 'gypsum') return 'Ca';
-  if (state === 'sodic') return (i + side) % 5 === 0 ? 'Ca' : 'Na';
-  return (i + side) % 7 === 0 ? 'Na' : 'Ca';
-}
-
-function Ion({ kind, size = 8 }: { kind: IonKind; size?: number }) {
-  const na = kind === 'Na';
+function SoilStage({ state }: { state: SoilState }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const near = useInView(ref, { amount: 0.1 });
   return (
-    <g>
-      <circle r={size} fill={na ? '#F3E9E1' : '#EEF0E6'} stroke={na ? '#9A4A24' : '#55603A'} strokeWidth={1} />
-      <text
-        textAnchor="middle"
-        dominantBaseline="central"
-        fontSize={size * 0.78}
-        fontFamily="JetBrains Mono, monospace"
-        fill={na ? '#9A4A24' : '#55603A'}
+    <div ref={ref} className="relative mt-3 h-[400px] overflow-hidden rounded-xl bg-[#F6F5F0] ring-1 ring-stone-900/[0.05]">
+      <Suspense
+        fallback={
+          <div className="grid h-full place-items-center">
+            <span className="mono-label text-faint">Loading 3D model</span>
+          </div>
+        }
       >
-        {na ? 'Na⁺' : 'Ca²⁺'}
-      </text>
-    </g>
-  );
-}
-
-const WATER_X = [100, 225, 345, 470];
-
-function SoilMicroscope({ state }: { state: SoilState }) {
-  const poses = state === 'sodic' ? DISPERSED : AGGREGATED;
-  const drains = state !== 'sodic';
-
-  return (
-    <svg viewBox="0 0 560 340" className="h-auto w-full" role="img" aria-label="ภาพจำลองอนุภาคดินระดับจุลภาค">
-      <defs>
-        <pattern id="soil-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-          <line x1="0" y1="0" x2="0" y2="6" stroke="#E5E3DC" strokeWidth="1" />
-        </pattern>
-      </defs>
-
-      {/* frame */}
-      <rect x="20" y="40" width="520" height="262" fill="#FBFAF7" stroke="#141615" strokeWidth="1" />
-      <line x1="20" y1="40" x2="540" y2="40" stroke="#141615" strokeWidth="2" />
-      <text x="24" y="30" fontSize="11" fill="#5B5F59">ผิวดิน</text>
-      <rect x="20" y="302" width="520" height="22" fill="url(#soil-hatch)" stroke="#C9C6BC" strokeWidth="1" />
-      <text x="24" y="318" fontSize="10" fill="#8D9089">ชั้นดินล่าง / น้ำชะลงไป</text>
-
-      {/* water infiltration */}
-      {WATER_X.map((x, i) =>
-        drains ? (
-          <motion.line
-            key={`w-${x}`}
-            x1={x}
-            y1={8}
-            x2={x}
-            y2={318}
-            stroke="#2F5F9E"
-            strokeOpacity={0.45}
-            strokeWidth={1.5}
-            strokeDasharray="6 6"
-            initial={{ strokeDashoffset: '0' }}
-            animate={{ strokeDashoffset: ['0', '-24'] }}
-            transition={{ duration: 0.9, repeat: Infinity, ease: 'linear', delay: i * 0.1 }}
-          />
-        ) : (
-          <g key={`w-${x}`}>
-            <line x1={x} y1={8} x2={x} y2={46} stroke="#2F5F9E" strokeOpacity={0.55} strokeWidth={1.5} strokeDasharray="6 6" />
-            <line x1={x - 9} y1={50} x2={x + 9} y2={50} stroke="#9A4A24" strokeWidth={2} />
-            <text x={x + 12} y={22} fontSize="10" fill="#9A4A24">
-              ×
-            </text>
-          </g>
-        ),
-      )}
-
-      {/* gypsum at the surface */}
-      <AnimatePresence>
-        {state === 'gypsum' ? (
-          <motion.g initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-            {Array.from({ length: 14 }, (_, i) => (
-              <rect key={i} x={40 + i * 36 + (i % 3) * 4} y={33 + (i % 2) * 2} width={8} height={5} fill="#FFFFFF" stroke="#141615" strokeWidth={0.75} />
-            ))}
-            <text x="536" y="30" fontSize="11" textAnchor="end" fill="#141615">
-              ยิปซัม CaSO₄·2H₂O
-            </text>
-          </motion.g>
-        ) : null}
-      </AnimatePresence>
-
-      {/* clay platelets with exchangeable cations */}
-      {poses.map((p, i) => (
-        <motion.g
-          key={i}
-          initial={false}
-          animate={{ x: p.x, y: p.y, rotate: p.r }}
-          transition={{ duration: 1.1, ease: EASE, delay: (i % 6) * 0.03 }}
-        >
-          <rect x={-26} y={-4.5} width={52} height={9} fill="#CDBB9E" stroke="#141615" strokeWidth={0.75} />
-          {([0, 1] as const).map((side) => {
-            const kind = attachedIon(state, i, side);
-            return (
-              <motion.g key={`${side}-${kind}`} initial={{ scale: 0.3, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.4, delay: 0.5 }}>
-                <g transform={`translate(${side ? 34 : -34} 0)`}>
-                  <Ion kind={kind} size={7.5} />
-                </g>
-              </motion.g>
-            );
-          })}
-        </motion.g>
-      ))}
-
-      {/* saline: dissolved salt floating in pore water */}
-      {state === 'saline'
-        ? [
-            [250, 110],
-            [300, 160],
-            [200, 200],
-            [470, 220],
-            [90, 250],
-            [380, 270],
-          ].map(([x, y], i) => (
-            <motion.g
-              key={`salt-${i}`}
-              initial={{ opacity: 0, x, y }}
-              animate={{ opacity: 1, x, y: [y, y - 6, y] }}
-              transition={{ y: { duration: 2.4, repeat: Infinity, delay: i * 0.3 }, opacity: { duration: 0.5 } }}
-            >
-              {i % 2 ? (
-                <g>
-                  <circle r={7} fill="#FFFFFF" stroke="#8D9089" />
-                  <text textAnchor="middle" dominantBaseline="central" fontSize={5.5} fontFamily="JetBrains Mono, monospace" fill="#5B5F59">
-                    Cl⁻
-                  </text>
-                </g>
-              ) : (
-                <Ion kind="Na" size={7} />
-              )}
-            </motion.g>
-          ))
-        : null}
-
-      {/* gypsum: displaced Na+ leached downward */}
-      {state === 'gypsum'
-        ? [130, 270, 400, 210, 470].map((x, i) => (
-            <motion.g
-              key={`leach-${i}`}
-              initial={{ x, y: 120, opacity: 0 }}
-              animate={{ y: [120, 330], opacity: [0, 1, 1, 0] }}
-              transition={{ duration: 3, repeat: Infinity, delay: 0.8 + i * 0.6, ease: 'easeIn' }}
-            >
-              <Ion kind="Na" size={7} />
-            </motion.g>
-          ))
-        : null}
-
-      {/* status tag */}
-      <g transform="translate(536 287)">
-        <rect x={-150} y={-12} width={150} height={22} fill={drains ? '#EEF0E6' : '#F3E9E1'} stroke={drains ? '#55603A' : '#9A4A24'} />
-        <text x={-75} y={0} textAnchor="middle" dominantBaseline="central" fontSize="11" fill={drains ? '#55603A' : '#9A4A24'}>
-          {drains ? 'ช่องว่างเปิด · น้ำซึมผ่านได้' : 'อนุภาคกระจาย · น้ำซึมผ่านยาก'}
-        </text>
-      </g>
-    </svg>
+        <SoilCore3D state={state} running={near} />
+      </Suspense>
+      <span className="pointer-events-none absolute bottom-3 right-4 text-[11.5px] text-faint">ลากเพื่อหมุนดู</span>
+    </div>
   );
 }
 
@@ -303,25 +130,26 @@ function SoilSim() {
         </AnimatePresence>
       </div>
 
-      {/* right: microscope view + remedy hierarchy */}
+      {/* right: 3D soil core + remedy hierarchy */}
       <div className={cx(INSET, 'col-span-12 flex flex-col p-5 lg:col-span-7')}>
-        <div className="flex items-center justify-between">
-          <span className="text-[12.5px] text-faint">ภาพจำลองระดับอนุภาค</span>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <span className="text-[12.5px] text-faint">แท่งดินตัดขวาง · ภาพจำลอง ไม่ได้ย่อส่วนจริง</span>
           <div className="flex items-center gap-4 text-[12px] text-muted">
             <span className="flex items-center gap-1.5">
-              <span className="h-2.5 w-5 rounded-sm bg-[#CDBB9E] ring-1 ring-stone-900/30" /> อนุภาคดินเหนียว
+              <span className="h-2 w-5 rounded-sm bg-[#CDBB9E] ring-1 ring-stone-900/30" /> ดินเหนียว
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="h-3 w-3 rounded-full border border-rust bg-rust-soft" /> Na⁺
+              <span className="h-3 w-3 rounded-full bg-[#D9772B]" /> Na⁺
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="h-3 w-3 rounded-full border border-olive bg-[#EEF0E6]" /> Ca²⁺
+              <span className="h-3 w-3 rounded-full bg-[#2F5F9E]" /> Ca²⁺
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="h-3 w-3 rounded-full bg-[#7FA6CF]" /> น้ำ
             </span>
           </div>
         </div>
-        <div className="mt-3">
-          <SoilMicroscope state={state} />
-        </div>
+        <SoilStage state={state} />
 
         <AnimatePresence mode="wait">
           <motion.div
