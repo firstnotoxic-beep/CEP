@@ -811,7 +811,7 @@ export default function Cutaway3D({ model, exploded, running }: CutawayProps) {
       camera={{ position: VIEWS[0].pos, fov: 34, near: 0.1, far: 100 }}
       gl={{ antialias: true }}
     >
-      <color attach="background" args={['#FAF9F5']} />
+      <color attach="background" args={['#FFFFFF']} />
       <hemisphereLight args={['#FFFFFF', '#DCD8CE', 0.9]} />
       <ambientLight intensity={0.35} />
       <directionalLight
@@ -834,10 +834,10 @@ export default function Cutaway3D({ model, exploded, running }: CutawayProps) {
         args={[20, 20]}
         cellSize={0.25}
         cellThickness={0.6}
-        cellColor="#E5E3DC"
+        cellColor="#E3E9E5"
         sectionSize={1}
         sectionThickness={1}
-        sectionColor="#D3D0C6"
+        sectionColor="#CDD6D0"
         fadeDistance={14}
         fadeStrength={1.5}
         infiniteGrid

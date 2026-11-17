@@ -43,9 +43,9 @@ function Hero() {
         className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[13px] text-muted"
       >
         <span>{PROJECT.program}</span>
-        <span className="h-1 w-1 rounded-full bg-stone-300" />
-        <span className="text-rust">{PROJECT.community}</span>
-        <span className="h-1 w-1 rounded-full bg-stone-300" />
+        <span className="h-1 w-1 rounded-full bg-rule-strong" />
+        <span className="text-accent">{PROJECT.community}</span>
+        <span className="h-1 w-1 rounded-full bg-rule-strong" />
         <span>{PROJECT.school}</span>
       </motion.div>
 
@@ -69,7 +69,7 @@ function Hero() {
           {PROJECT.team.map((name, i) => (
             <span key={name} className="whitespace-nowrap">
               {name}
-              {i < PROJECT.team.length - 1 ? <span className="mx-2.5 text-stone-300">·</span> : null}
+              {i < PROJECT.team.length - 1 ? <span className="mx-2.5 text-faint">·</span> : null}
             </span>
           ))}
         </p>
@@ -101,10 +101,10 @@ function FlowNode({ title, sub, tone = 'plain', delay }: { title: string; sub: s
       transition={{ duration: 0.6, ease: EASE, delay }}
       className={cx(
         'flex flex-col border-l-2 py-1 pl-3',
-        tone === 'plain' && 'border-stone-300',
-        tone === 'rust' && 'border-rust',
+        tone === 'plain' && 'border-rule-strong',
+        tone === 'rust' && 'border-accent',
         tone === 'olive' && 'border-olive',
-        tone === 'out' && 'border-l-[3px] border-stone-900',
+        tone === 'out' && 'border-l-[3px] border-ink',
       )}
     >
       <span className={cx('leading-snug text-ink', tone === 'out' ? 'text-[15.5px] font-bold' : 'text-[14px] font-semibold')}>{title}</span>
@@ -124,7 +124,7 @@ function Joint({ kind }: { kind: 'line' | 'split' | 'merge' }) {
   return (
     <div className="relative h-full w-full">
       <svg viewBox="0 0 24 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full" aria-hidden="true">
-        <path d={d} fill="none" stroke="#B9B5AA" strokeWidth={1.25} vectorEffect="non-scaling-stroke" />
+        <path d={d} fill="none" stroke="#C7D2CA" strokeWidth={1.25} vectorEffect="non-scaling-stroke" />
       </svg>
     </div>
   );
@@ -197,7 +197,6 @@ function StatBento() {
           transition={{ duration: 0.6, ease: EASE, delay: 0.1 * i }}
           className={cx(INSET, 'flex flex-col p-5')}
         >
-          <span className="mono-label text-faint">{s.code}</span>
           <div className="mt-2 flex items-baseline gap-1.5">
             {s.prefix ? <span className="text-xl font-light text-muted">{s.prefix}</span> : null}
             <CountUp
@@ -259,7 +258,7 @@ function CauseDiagram() {
                     onLeave={() => setFocus(null)}
                     dot="right"
                   >
-                    <span className="mono-label text-rust">{s.code}</span>
+                    <span className="mono-label text-accent">{s.code}</span>
                     <span className="mt-2 block text-[17px] font-semibold leading-snug">{s.title}</span>
                     <span className="mt-1.5 block text-sm leading-relaxed text-muted">{s.detail}</span>
                   </HoverBox>
@@ -280,7 +279,7 @@ function CauseDiagram() {
                     key={`${c}-${s}`}
                     d={`M0 ${y1} C50 ${y1}, 50 ${y2}, 100 ${y2}`}
                     fill="none"
-                    stroke={on ? '#9A4A24' : '#CFCBC1'}
+                    stroke={on ? '#17694A' : '#C7D2CA'}
                     strokeWidth={on ? 2 : 1.25}
                     strokeLinecap="round"
                     vectorEffect="non-scaling-stroke"
@@ -355,12 +354,12 @@ function HoverBox({
       onFocus={onEnter}
       onBlur={onLeave}
       className={cx(
-        'relative h-full w-full rounded-xl px-5 py-4 text-left ring-1 transition-all duration-300',
+        'relative h-full w-full rounded-md px-5 py-4 text-left ring-1 transition-all duration-300',
         on
           ? tone === 'rust'
-            ? 'bg-rust-soft ring-rust/30'
-            : 'bg-white shadow-[0_10px_30px_-12px_rgba(20,22,21,0.25)] ring-stone-900/20'
-          : 'bg-stone-50 ring-stone-900/[0.06]',
+            ? 'bg-accent-soft ring-accent/30'
+            : 'bg-white shadow-[0_10px_30px_-12px_rgba(20,22,21,0.25)] ring-rule-strong'
+          : 'bg-paper ring-rule',
         dim && 'opacity-40',
       )}
     >
@@ -369,7 +368,7 @@ function HoverBox({
         className={cx(
           'absolute top-1/2 h-2.5 w-2.5 -translate-y-1/2 rounded-full ring-2 ring-white',
           dot === 'right' ? '-right-[5px]' : '-left-[5px]',
-          on ? (tone === 'rust' ? 'bg-rust' : 'bg-stone-900') : 'bg-stone-300',
+          on ? (tone === 'rust' ? 'bg-accent' : 'bg-ink') : 'bg-rule-strong',
         )}
       />
     </button>
@@ -404,11 +403,11 @@ function ImpactPanel() {
                 return (
                   <div
                     key={t.code}
-                    className={cx('relative rounded-xl transition-colors', on ? 'bg-stone-50 ring-1 ring-stone-900/[0.05]' : 'hover:bg-stone-50/60')}
+                    className={cx('relative rounded-md transition-colors', on ? 'bg-paper ring-1 ring-rule' : 'hover:bg-paper')}
                   >
                     <button type="button" onClick={() => selectTier(i)} className="block w-full px-5 pb-3 pt-4 text-left">
                       <span className="flex items-baseline gap-3">
-                        <span className={cx('mono-label', i === 0 ? 'text-rust' : 'text-ink')}>{t.code}</span>
+                        <span className={cx('mono-label', i === 0 ? 'text-accent' : 'text-ink')}>{t.code}</span>
                         <span className="th-label text-faint">{t.rank}</span>
                       </span>
                       <span className="mt-1.5 block text-lg font-semibold leading-snug">{t.group}</span>
@@ -440,7 +439,7 @@ function ImpactPanel() {
                             }}
                             className={cx(
                               'rounded-full px-3 py-1 text-[13.5px] ring-1 transition-colors',
-                              selected ? 'bg-rust-soft text-rust ring-rust/30' : 'bg-white text-ink ring-stone-900/10 hover:ring-stone-900/25',
+                              selected ? 'bg-accent-soft text-accent ring-accent/30' : 'bg-white text-ink ring-rule-strong hover:ring-rule-strong',
                             )}
                           >
                             {p.name}
@@ -454,7 +453,7 @@ function ImpactPanel() {
             </div>
 
             {/* voice panel */}
-            <div className="relative col-span-12 flex min-h-[380px] flex-col rounded-xl bg-stone-50 p-7 ring-1 ring-stone-900/[0.05] lg:col-span-5">
+            <div className="relative col-span-12 flex min-h-[380px] flex-col rounded-md bg-paper p-7 ring-1 ring-rule lg:col-span-5">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={person.id}
@@ -470,7 +469,7 @@ function ImpactPanel() {
                       {person.role} · {person.age} ปี
                     </span>
                   </div>
-                  <blockquote className="relative mt-5 flex-1 border-l-2 border-rust/30 pl-5 text-[1.05rem] leading-[1.95] text-ink">
+                  <blockquote className="relative mt-5 flex-1 border-l-2 border-accent/30 pl-5 text-[1.05rem] leading-[1.95] text-ink">
                     “{person.quote}”
                   </blockquote>
                   <div className="mt-6 text-[12.5px] text-faint">เสียงจากคนในพื้นที่ ชุมชนที่ 1 · ยกมาตามต้นฉบับ</div>
@@ -495,7 +494,7 @@ function DataPlanGrid() {
 
       <Reveal className="mt-6">
         <Figure code="FIG. 03" title="เก็บอะไร ด้วยวิธีไหน" note="ยังไม่ได้ลงพื้นที่" bodyClassName="px-6 pb-6 pt-3">
-          <div className="grid gap-y-6 md:grid-cols-2 md:gap-x-8 xl:grid-cols-4 xl:gap-x-0 xl:divide-x xl:divide-stone-900/[0.08]">
+          <div className="grid gap-y-6 md:grid-cols-2 md:gap-x-8 xl:grid-cols-4 xl:gap-x-0 xl:divide-x xl:divide-rule">
             {DATA_PLAN.map((d, i) => (
               <motion.section
                 key={d.code}
@@ -506,7 +505,7 @@ function DataPlanGrid() {
                 className="xl:px-6 xl:first:pl-0 xl:last:pr-0"
               >
                 <h4 className="text-[1.05rem] font-semibold text-ink">{d.domain}</h4>
-                <div className="mt-0.5 text-[13px] text-rust">{d.method}</div>
+                <div className="mt-0.5 text-[13px] text-accent">{d.method}</div>
                 <p className="mt-2.5 text-sm leading-relaxed text-muted">{d.detail}</p>
               </motion.section>
             ))}

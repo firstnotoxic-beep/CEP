@@ -48,11 +48,11 @@ function SoilStage({ state }: { state: SoilState }) {
   const ref = useRef<HTMLDivElement>(null);
   const near = useInView(ref, { amount: 0.1 });
   return (
-    <div ref={ref} className="relative mt-3 h-[400px] overflow-hidden rounded-xl bg-[#F6F5F0] ring-1 ring-stone-900/[0.05]">
+    <div ref={ref} className="relative mt-3 h-[400px] overflow-hidden rounded-md bg-[#F4F7F5] ring-1 ring-rule">
       <Suspense
         fallback={
           <div className="grid h-full place-items-center">
-            <span className="mono-label text-faint">Loading 3D model</span>
+            <span className="mono-label text-faint">กำลังโหลดโมเดล 3D</span>
           </div>
         }
       >
@@ -106,8 +106,8 @@ function SoilSim() {
                 type="button"
                 onClick={() => setGypsum((g) => !g)}
                 className={cx(
-                  'mt-4 flex w-full items-center justify-between rounded-xl px-4 py-3 text-left ring-1 transition-colors',
-                  gypsum ? 'bg-olive text-white ring-olive' : 'bg-white text-ink ring-stone-900/10 hover:bg-stone-50',
+                  'mt-4 flex w-full items-center justify-between rounded-md px-4 py-3 text-left ring-1 transition-colors',
+                  gypsum ? 'bg-olive text-white ring-olive' : 'bg-white text-ink ring-rule-strong hover:bg-paper',
                 )}
               >
                 <span className="text-[15px] font-medium">{gypsum ? 'ใส่ยิปซัมแล้ว: Ca²⁺ เข้าไปแทนที่ Na⁺' : 'ลองใส่ยิปซัมดู'}</span>
@@ -121,7 +121,7 @@ function SoilSim() {
             <ul className="mt-3 space-y-2.5">
               {info.science.map((s) => (
                 <li key={s} className="flex gap-3 text-[14.5px] leading-relaxed text-muted">
-                  <span className="mt-[10px] h-1 w-1 shrink-0 rounded-full bg-stone-400" />
+                  <span className="mt-[10px] h-1 w-1 shrink-0 rounded-full bg-rule-strong" />
                   <span>{s}</span>
                 </li>
               ))}
@@ -136,7 +136,7 @@ function SoilSim() {
           <span className="text-[12.5px] text-faint">แท่งดินตัดขวาง · ภาพจำลอง ไม่ได้ย่อส่วนจริง</span>
           <div className="flex items-center gap-4 text-[12px] text-muted">
             <span className="flex items-center gap-1.5">
-              <span className="h-2 w-5 rounded-sm bg-[#CDBB9E] ring-1 ring-stone-900/30" /> ดินเหนียว
+              <span className="h-2 w-5 rounded-sm bg-[#CDBB9E] ring-1 ring-rule-strong" /> ดินเหนียว
             </span>
             <span className="flex items-center gap-1.5">
               <span className="h-3 w-3 rounded-full bg-[#D9772B]" /> Na⁺
@@ -162,11 +162,11 @@ function SoilSim() {
           >
             <div className="col-span-12 md:col-span-7">
               <SourceTag kind="proposal" />
-              <div className="mt-2 rounded-xl bg-white p-3.5 shadow-sm ring-1 ring-stone-900/10">
-                <div className="th-label text-rust">ตัวแก้หลัก</div>
+              <div className="mt-2 rounded-md bg-white p-3.5 shadow-sm ring-1 ring-rule-strong">
+                <div className="th-label text-accent">ตัวแก้หลัก</div>
                 <div className="mt-1 text-[17px] font-semibold leading-snug">{info.primary}</div>
               </div>
-              <div className="ml-6 mt-2 rounded-xl border border-dashed border-stone-300 bg-white/60 p-3.5">
+              <div className="ml-6 mt-2 rounded-md border border-dashed border-rule-strong bg-white/60 p-3.5">
                 <div className="th-label text-faint">ตัวเสริม</div>
                 <div className="mt-1 text-[15px] text-muted">{info.support}</div>
               </div>
@@ -175,16 +175,16 @@ function SoilSim() {
               {kind === 'sodic' ? (
                 <>
                   <div className="th-label text-faint">ปฏิกิริยาแลกเปลี่ยนไอออน</div>
-                  <div className="mt-2 rounded-xl bg-white p-3.5 font-mono text-[12px] leading-relaxed text-ink ring-1 ring-stone-900/[0.07]">
+                  <div className="mt-2 rounded-md bg-white p-3.5 font-mono text-[12px] leading-relaxed text-ink ring-1 ring-rule">
                     <div>{SOIL_EQUATION.lhs}</div>
-                    <div className="my-1 text-rust">→</div>
+                    <div className="my-1 text-accent">→</div>
                     <div>{SOIL_EQUATION.rhs}</div>
                   </div>
                 </>
               ) : (
                 <>
                   <div className="th-label text-faint">ข้อควรระวัง</div>
-                  <p className="mt-2 rounded-xl bg-white p-3.5 text-[13.5px] leading-relaxed text-muted ring-1 ring-stone-900/[0.07]">
+                  <p className="mt-2 rounded-md bg-white p-3.5 text-[13.5px] leading-relaxed text-muted ring-1 ring-rule">
                     ถ้าออกมาเป็นดินโซดิก เปลือกหอยแก้เองไม่ได้ เพราะ CaCO₃ ละลายน้ำได้น้อยมาก ต้องใช้ยิปซัมเป็นตัวหลัก
                   </p>
                 </>
@@ -226,43 +226,43 @@ function AmmoniaGraph({ play }: { play: number }) {
   return (
     <svg viewBox="0 0 520 300" className="h-auto w-full" role="img" aria-label="กราฟสัดส่วนแอมโมเนียในรูปก๊าซตาม pH">
       {/* near-neutral band */}
-      <rect x={gx(6.5)} y={G.y1} width={gx(8) - gx(6.5)} height={G.y0 - G.y1} fill="#EEF0E6" />
-      <text x={(gx(6.5) + gx(8)) / 2} y={G.y1 + 14} textAnchor="middle" fontSize="10" fill="#55603A">
+      <rect x={gx(6.5)} y={G.y1} width={gx(8) - gx(6.5)} height={G.y0 - G.y1} fill="#E7F1EB" />
+      <text x={(gx(6.5) + gx(8)) / 2} y={G.y1 + 14} textAnchor="middle" fontSize="10" fill="#3E6B4A">
         ใกล้เป็นกลาง
       </text>
 
       {/* grid + axes */}
       {[0, 0.25, 0.5, 0.75, 1].map((f) => (
         <g key={f}>
-          <line x1={G.x0} x2={G.x1} y1={gy(f)} y2={gy(f)} stroke="#E5E3DC" />
-          <text x={G.x0 - 8} y={gy(f)} textAnchor="end" dominantBaseline="central" fontSize="10" fontFamily="JetBrains Mono, monospace" fill="#8D9089">
+          <line x1={G.x0} x2={G.x1} y1={gy(f)} y2={gy(f)} stroke="#E1E8E3" />
+          <text x={G.x0 - 8} y={gy(f)} textAnchor="end" dominantBaseline="central" fontSize="10" fontFamily="JetBrains Mono, monospace" fill="#87948C">
             {f * 100}
           </text>
         </g>
       ))}
       {Array.from({ length: PH_MAX - PH_MIN + 1 }, (_, i) => PH_MIN + i).map((ph) => (
-        <text key={ph} x={gx(ph)} y={G.y0 + 16} textAnchor="middle" fontSize="10" fontFamily="JetBrains Mono, monospace" fill="#8D9089">
+        <text key={ph} x={gx(ph)} y={G.y0 + 16} textAnchor="middle" fontSize="10" fontFamily="JetBrains Mono, monospace" fill="#87948C">
           {ph}
         </text>
       ))}
-      <line x1={G.x0} x2={G.x1} y1={G.y0} y2={G.y0} stroke="#141615" />
-      <line x1={G.x0} x2={G.x0} y1={G.y0} y2={G.y1} stroke="#141615" />
-      <text x={(G.x0 + G.x1) / 2} y={G.y0 + 36} textAnchor="middle" fontSize="11" fill="#5B5F59">
+      <line x1={G.x0} x2={G.x1} y1={G.y0} y2={G.y0} stroke="#142019" />
+      <line x1={G.x0} x2={G.x0} y1={G.y0} y2={G.y1} stroke="#142019" />
+      <text x={(G.x0 + G.x1) / 2} y={G.y0 + 36} textAnchor="middle" fontSize="11" fill="#4E5D54">
         pH ของกองหมัก
       </text>
-      <text x={14} y={(G.y0 + G.y1) / 2} textAnchor="middle" fontSize="11" fill="#5B5F59" transform={`rotate(-90 14 ${(G.y0 + G.y1) / 2})`}>
+      <text x={14} y={(G.y0 + G.y1) / 2} textAnchor="middle" fontSize="11" fill="#4E5D54" transform={`rotate(-90 14 ${(G.y0 + G.y1) / 2})`}>
         NH₃ ในรูปก๊าซ (%)
       </text>
 
       {/* pKa marker */}
-      <line x1={gx(PKA)} x2={gx(PKA)} y1={G.y0} y2={G.y1} stroke="#C9C6BC" strokeDasharray="3 4" />
-      <text x={gx(PKA) + 5} y={G.y0 - 8} fontSize="10" fontFamily="JetBrains Mono, monospace" fill="#8D9089">
+      <line x1={gx(PKA)} x2={gx(PKA)} y1={G.y0} y2={G.y1} stroke="#C7D2CA" strokeDasharray="3 4" />
+      <text x={gx(PKA) + 5} y={G.y0 - 8} fontSize="10" fontFamily="JetBrains Mono, monospace" fill="#87948C">
         pKa ≈ 9.25
       </text>
 
       {/* lime marker */}
-      <line x1={gx(PH_LIME)} x2={gx(PH_LIME)} y1={G.y0} y2={G.y1} stroke="#9A4A24" strokeDasharray="3 4" />
-      <text x={gx(PH_LIME) - 5} y={G.y0 - 60} textAnchor="end" fontSize="10" fill="#9A4A24">
+      <line x1={gx(PH_LIME)} x2={gx(PH_LIME)} y1={G.y0} y2={G.y1} stroke="#A8492A" strokeDasharray="3 4" />
+      <text x={gx(PH_LIME) - 5} y={G.y0 - 60} textAnchor="end" fontSize="10" fill="#A8492A">
         Ca(OH)₂ อิ่มตัว ≈ pH 12.4
       </text>
 
@@ -271,7 +271,7 @@ function AmmoniaGraph({ play }: { play: number }) {
         key={`curve-${play}`}
         d={CURVE}
         fill="none"
-        stroke="#141615"
+        stroke="#142019"
         strokeWidth={2}
         initial={{ pathLength: 0 }}
         animate={{ pathLength: 1 }}
@@ -288,7 +288,7 @@ function AmmoniaGraph({ play }: { play: number }) {
         }}
         transition={{ duration: 2.2, ease: 'easeInOut', delay: 1 }}
       >
-        <circle r={7} fill="#9A4A24" stroke="#FFFFFF" strokeWidth={2} />
+        <circle r={7} fill="#A8492A" stroke="#FFFFFF" strokeWidth={2} />
       </motion.g>
 
       {/* NH3 escaping */}
@@ -298,7 +298,7 @@ function AmmoniaGraph({ play }: { play: number }) {
           x={gx(11.2) + i * 14}
           fontSize="10"
           fontFamily="JetBrains Mono, monospace"
-          fill="#9A4A24"
+          fill="#A8492A"
           initial={{ y: G.y1 + 40, opacity: 0 }}
           animate={{ y: [G.y1 + 40, G.y1 - 10], opacity: [0, 1, 0] }}
           transition={{ duration: 1.8, repeat: Infinity, delay: 3.2 + i * 0.35, ease: 'easeOut' }}
@@ -315,38 +315,38 @@ function TeamPlanDiagram({ play }: { play: number }) {
   const unit = 120;
   return (
     <svg viewBox="0 0 520 300" className="h-auto w-full" role="img" aria-label="แผนสำรอง: หยุดเติมเปลือกสด และเติมวัสดุแห้งเพิ่ม 30%">
-      <text x="20" y="34" fontSize="11" fill="#5B5F59">
+      <text x="20" y="34" fontSize="11" fill="#4E5D54">
         ส่วนผสมในคอกหมัก (สัดส่วนเดิมตามใบสมัคร 1 : 2)
       </text>
 
       {/* fresh shell input – stopped */}
-      <text x="20" y="80" fontSize="13" fill="#141615">
+      <text x="20" y="80" fontSize="13" fill="#142019">
         เปลือกกุ้งสด
       </text>
-      <rect x="150" y="64" width={unit} height="24" fill="#E3B9A3" stroke="#141615" />
+      <rect x="150" y="64" width={unit} height="24" fill="#E3B9A3" stroke="#142019" />
       <motion.g key={`stop-${play}`} initial={{ opacity: 0, scale: 1.4 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4, delay: 0.4 }}>
-        <line x1="290" y1="76" x2="350" y2="76" stroke="#141615" strokeWidth="1.5" markerEnd="url(#arrow-team)" />
-        <line x1="306" y1="64" x2="334" y2="88" stroke="#9A4A24" strokeWidth="2.5" />
-        <line x1="334" y1="64" x2="306" y2="88" stroke="#9A4A24" strokeWidth="2.5" />
-        <rect x="362" y="64" width="128" height="24" fill="#F3E9E1" stroke="#9A4A24" />
-        <text x="426" y="77" textAnchor="middle" dominantBaseline="central" fontSize="12" fill="#9A4A24">
+        <line x1="290" y1="76" x2="350" y2="76" stroke="#142019" strokeWidth="1.5" markerEnd="url(#arrow-team)" />
+        <line x1="306" y1="64" x2="334" y2="88" stroke="#A8492A" strokeWidth="2.5" />
+        <line x1="334" y1="64" x2="306" y2="88" stroke="#A8492A" strokeWidth="2.5" />
+        <rect x="362" y="64" width="128" height="24" fill="#F6E9E3" stroke="#A8492A" />
+        <text x="426" y="77" textAnchor="middle" dominantBaseline="central" fontSize="12" fill="#A8492A">
           หยุดเติมเปลือกสด
         </text>
       </motion.g>
 
       {/* dry material grows +30% */}
-      <text x="20" y="140" fontSize="13" fill="#141615">
+      <text x="20" y="140" fontSize="13" fill="#142019">
         วัสดุแห้ง
       </text>
-      <rect x="150" y="124" width={unit * 2} height="24" fill="#D9CDB4" stroke="#141615" />
+      <rect x="150" y="124" width={unit * 2} height="24" fill="#D9CDB4" stroke="#142019" />
       <motion.rect
         key={`grow-${play}`}
         x={150 + unit * 2}
         y="124"
         height="24"
-        fill="#55603A"
+        fill="#3E6B4A"
         fillOpacity={0.85}
-        stroke="#141615"
+        stroke="#142019"
         initial={{ width: 0 }}
         animate={{ width: unit * 2 * 0.3 }}
         transition={{ duration: 1, ease: EASE, delay: 0.8 }}
@@ -358,14 +358,14 @@ function TeamPlanDiagram({ play }: { play: number }) {
         dominantBaseline="central"
         fontSize="14"
         fontWeight="600"
-        fill="#55603A"
+        fill="#3E6B4A"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.6 }}
       >
         +30%
       </motion.text>
-      <text x="150" y="166" fontSize="10" fill="#8D9089">
+      <text x="150" y="166" fontSize="10" fill="#87948C">
         แกลบ / ขุยมะพร้าว
       </text>
 
@@ -377,23 +377,23 @@ function TeamPlanDiagram({ play }: { play: number }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 1.8 + i * 0.25 }}
         >
-          <rect x={20 + i * 168} y="212" width="150" height="44" fill="#FFFFFF" stroke="#55603A" />
-          <text x={95 + i * 168} y="234" textAnchor="middle" dominantBaseline="central" fontSize="11.5" fill="#141615">
+          <rect x={20 + i * 168} y="212" width="150" height="44" fill="#FFFFFF" stroke="#3E6B4A" />
+          <text x={95 + i * 168} y="234" textAnchor="middle" dominantBaseline="central" fontSize="11.5" fill="#142019">
             {t}
           </text>
-          {i < 2 ? <line x1={172 + i * 168} y1="234" x2={186 + i * 168} y2="234" stroke="#55603A" strokeWidth="1.5" markerEnd="url(#arrow-olive)" /> : null}
+          {i < 2 ? <line x1={172 + i * 168} y1="234" x2={186 + i * 168} y2="234" stroke="#3E6B4A" strokeWidth="1.5" markerEnd="url(#arrow-olive)" /> : null}
         </motion.g>
       ))}
-      <text x="20" y="282" fontSize="10.5" fill="#8D9089">
+      <text x="20" y="282" fontSize="10.5" fill="#87948C">
         ไม่ต้องดัน pH ให้สูงขึ้น ไนโตรเจนจึงยังอยู่ในกองเป็นปุ๋ย
       </text>
 
       <defs>
         <marker id="arrow-team" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-          <path d="M0 0 L10 5 L0 10 z" fill="#141615" />
+          <path d="M0 0 L10 5 L0 10 z" fill="#142019" />
         </marker>
         <marker id="arrow-olive" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-          <path d="M0 0 L10 5 L0 10 z" fill="#55603A" />
+          <path d="M0 0 L10 5 L0 10 z" fill="#3E6B4A" />
         </marker>
       </defs>
     </svg>
@@ -418,8 +418,8 @@ function LimeSim() {
       bodyClassName="grid grid-cols-12 gap-2 p-2 pt-3"
     >
       <div className="col-span-12 p-4 lg:col-span-5">
-        <div className="rounded-xl bg-rust-soft px-4 py-3 ring-1 ring-rust/15">
-          <span className="th-label text-rust">สถานการณ์</span>
+        <div className="rounded-md bg-warn-soft px-4 py-3 ring-1 ring-warn/20">
+          <span className="th-label text-warn">สถานการณ์</span>
           <span className="mt-0.5 block text-[16px] font-semibold text-ink">{BACKUP_TRIGGER}</span>
         </div>
 
@@ -442,14 +442,14 @@ function LimeSim() {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.35, ease: EASE }}
           >
-            <h3 className={cx('mt-6 text-[1.25rem] font-semibold', wrong ? 'text-rust' : 'text-olive')}>{panel.title}</h3>
+            <h3 className={cx('mt-6 text-[1.25rem] font-semibold', wrong ? 'text-warn' : 'text-accent')}>{panel.title}</h3>
 
             {wrong ? (
               <div className="mt-3 space-y-2">
                 {LIME_WRONG.equations.map((eq) => (
                   <div key={eq.lhs} className={cx(INSET, 'px-4 py-3')}>
                     <div className="font-mono text-[15px] text-ink">
-                      {eq.lhs} <span className="mx-1 text-rust">→</span> {eq.rhs}
+                      {eq.lhs} <span className="mx-1 text-accent">→</span> {eq.rhs}
                     </div>
                     <div className="mt-1 text-[13px] text-muted">{eq.note}</div>
                   </div>
@@ -458,7 +458,7 @@ function LimeSim() {
             ) : (
               <ol className="mt-3 space-y-2">
                 {LIME_TEAM.actions.map((a, i) => (
-                  <li key={a} className="flex items-center gap-3 rounded-xl bg-[#EEF0E6] px-4 py-3 ring-1 ring-olive/15">
+                  <li key={a} className="flex items-center gap-3 rounded-md bg-paper px-4 py-3 ring-1 ring-olive/15">
                     <span className="font-mono text-[12px] text-olive">{String(i + 1).padStart(2, '0')}</span>
                     <span className="text-[16px] font-semibold">{a}</span>
                   </li>
@@ -472,7 +472,7 @@ function LimeSim() {
             <ul className="mt-3 space-y-2.5">
               {panel.science.map((s) => (
                 <li key={s} className="flex gap-3 text-[14.5px] leading-relaxed text-muted">
-                  <span className="mt-[10px] h-1 w-1 shrink-0 rounded-full bg-stone-400" />
+                  <span className="mt-[10px] h-1 w-1 shrink-0 rounded-full bg-rule-strong" />
                   <span>{s}</span>
                 </li>
               ))}
@@ -509,7 +509,7 @@ function ConstraintGrid() {
   return (
     <Reveal className="mt-8">
       <Figure code="FIG. 3.3" title="งบ เวลา และวัตถุดิบ" bodyClassName="px-6 pb-6 pt-3">
-        <div className="grid gap-y-8 lg:grid-cols-3 lg:divide-x lg:divide-stone-900/[0.08]">
+        <div className="grid gap-y-8 lg:grid-cols-3 lg:divide-x lg:divide-rule">
           {CONSTRAINTS.map((c, i) => (
             <motion.section
               key={c.code}
@@ -519,7 +519,7 @@ function ConstraintGrid() {
               transition={{ duration: 0.55, ease: EASE, delay: 0.08 * i }}
               className="lg:px-6 lg:first:pl-0 lg:last:pr-0"
             >
-              <div className="text-[13px] text-rust">{c.topic}</div>
+              <div className="text-[13px] text-accent">{c.topic}</div>
               <h4 className="mt-1 text-[1.2rem] font-semibold leading-snug">{c.headline}</h4>
               <ul className="mt-3 space-y-1.5">
                 {c.points.map((p) => (
@@ -548,17 +548,17 @@ function ConstraintVisual({ c }: { c: Constraint }) {
               key={d.day}
               className={cx(
                 'flex min-h-[64px] flex-col items-center justify-start rounded-lg px-1 py-2 text-center',
-                d.on ? 'bg-rust-soft ring-1 ring-rust/15' : 'bg-stone-50',
+                d.on ? 'bg-accent-soft ring-1 ring-accent/15' : 'bg-paper',
               )}
             >
-              <span className={cx('text-[13px] font-semibold', d.on ? 'text-rust' : 'text-faint')}>{d.day}</span>
+              <span className={cx('text-[13px] font-semibold', d.on ? 'text-accent' : 'text-faint')}>{d.day}</span>
               {d.on ? <span className="mt-1 text-[10.5px] leading-tight text-ink">{d.slot}</span> : null}
             </div>
           ))}
         </div>
         <div className="mt-2 flex items-center justify-between text-[12px] text-muted">
           <span>4 รอบต่อสัปดาห์</span>
-          <span className="text-rust">ค้างไม่เกิน 48 ชม.</span>
+          <span className="text-accent">ค้างไม่เกิน 48 ชม.</span>
         </div>
       </div>
     );
@@ -568,11 +568,11 @@ function ConstraintVisual({ c }: { c: Constraint }) {
       <div className="mt-5 pt-1">
         <div className="th-label text-faint">ก่อนใช้วัสดุทุกครั้ง</div>
         <div className="mt-2 flex items-stretch gap-1.5 text-center text-[13px]">
-          <div className="flex-1 rounded-lg bg-stone-50 px-2 py-2.5">ขุยมะพร้าว / แกลบ</div>
-          <span className="self-center text-stone-300">→</span>
-          <div className="flex-1 rounded-lg bg-rust-soft px-2 py-2.5 font-semibold text-rust ring-1 ring-rust/20">วัด EC</div>
-          <span className="self-center text-stone-300">→</span>
-          <div className="flex-1 rounded-lg bg-stone-50 px-2 py-2.5">ผสมลงคอก</div>
+          <div className="flex-1 rounded-lg bg-paper px-2 py-2.5">ขุยมะพร้าว / แกลบ</div>
+          <span className="self-center text-faint">→</span>
+          <div className="flex-1 rounded-lg bg-accent-soft px-2 py-2.5 font-semibold text-accent ring-1 ring-accent/20">วัด EC</div>
+          <span className="self-center text-faint">→</span>
+          <div className="flex-1 rounded-lg bg-paper px-2 py-2.5">ผสมลงคอก</div>
         </div>
       </div>
     );
@@ -581,11 +581,11 @@ function ConstraintVisual({ c }: { c: Constraint }) {
     <div className="mt-5 pt-1">
       <div className="th-label text-faint">เงินกับของมาจากไหน</div>
       <div className="mt-2 grid grid-cols-2 gap-2 text-[13px]">
-        <div className="rounded-lg bg-stone-50 px-3 py-2.5">
+        <div className="rounded-lg bg-paper px-3 py-2.5">
           <span className="block text-[11.5px] text-faint">งบ</span>
           งบนวัตกรรมชุมชน อบต.
         </div>
-        <div className="rounded-lg bg-stone-50 px-3 py-2.5">
+        <div className="rounded-lg bg-paper px-3 py-2.5">
           <span className="block text-[11.5px] text-faint">อะไหล่</span>
           ร้านวัสดุก่อสร้างในตำบล
         </div>
@@ -608,7 +608,7 @@ function ConflictPanel() {
       <ExchangeDiagram focus={focus} setFocus={setFocus} />
 
       {/* safeguards */}
-      <div className="mt-6 grid grid-cols-12 gap-5 border-t border-stone-900/[0.06] pt-5">
+      <div className="mt-6 grid grid-cols-12 gap-5 border-t border-rule pt-5">
         <div className="col-span-12 lg:col-span-5">
           <div className="th-label text-faint">กันไม่ให้ชาวบ้านเดือดร้อน</div>
           <DistanceDiagram />
@@ -617,9 +617,8 @@ function ConflictPanel() {
           {CONFLICT.safeguards.map((s, i) => {
             const last = i === CONFLICT.safeguards.length - 1;
             return (
-              <li key={s} className="grid grid-cols-[2.25rem_1fr] items-baseline border-t border-stone-900/[0.07] py-3 first:border-t-0">
-                <span className={cx('font-mono text-[13px]', last ? 'text-rust' : 'text-faint')}>{String(i + 1).padStart(2, '0')}</span>
-                <span className={cx('text-[16px] leading-relaxed', last ? 'font-semibold text-rust' : 'text-ink')}>{s}</span>
+              <li key={s} className="border-t border-rule py-3 first:border-t-0">
+                <span className={cx('text-[16px] leading-relaxed', last ? 'font-semibold text-accent' : 'text-ink')}>{s}</span>
               </li>
             );
           })}
@@ -649,53 +648,53 @@ function ExchangeDiagram({ focus, setFocus }: { focus: Side; setFocus: (s: Side)
       <defs>
         {['ink', 'rust'].map((k) => (
           <marker key={k} id={`xa-${k}`} viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-            <path d="M0 1 L9 5 L0 9" fill="none" stroke={k === 'rust' ? '#9A4A24' : '#8D9089'} strokeWidth="1.6" />
+            <path d="M0 1 L9 5 L0 9" fill="none" stroke={k === 'rust' ? '#17694A' : '#87948C'} strokeWidth="1.6" />
           </marker>
         ))}
       </defs>
 
       {/* ground */}
-      <line x1="20" y1="190" x2="942" y2="190" stroke="#D9D5CB" />
+      <line x1="20" y1="190" x2="942" y2="190" stroke="#E1E8E3" />
 
       {/* vendor: shop front + two lidded bins */}
       <g {...party('vendor')}>
-        <rect x="58" y="98" width="148" height="92" fill="#FFFFFF" stroke="#141615" strokeWidth="1.2" />
-        <path d="M50 98 L214 98 L202 72 L62 72 Z" fill="#F3E9E1" stroke="#141615" strokeWidth="1.2" />
+        <rect x="58" y="98" width="148" height="92" fill="#FFFFFF" stroke="#142019" strokeWidth="1.2" />
+        <path d="M50 98 L214 98 L202 72 L62 72 Z" fill="#F3E9E1" stroke="#142019" strokeWidth="1.2" />
         {[0, 1, 2, 3, 4, 5].map((i) => (
-          <line key={i} x1={78 + i * 22} y1="72" x2={74 + i * 22} y2="98" stroke="#9A4A24" strokeOpacity="0.35" />
+          <line key={i} x1={78 + i * 22} y1="72" x2={74 + i * 22} y2="98" stroke="#17694A" strokeOpacity="0.35" />
         ))}
-        <rect x="76" y="150" width="30" height="40" rx="3" fill="#ECEAE4" stroke="#141615" />
-        <rect x="112" y="150" width="30" height="40" rx="3" fill="#ECEAE4" stroke="#141615" />
+        <rect x="76" y="150" width="30" height="40" rx="3" fill="#ECEAE4" stroke="#142019" />
+        <rect x="112" y="150" width="30" height="40" rx="3" fill="#ECEAE4" stroke="#142019" />
         <rect x="73" y="145" width="36" height="6" rx="2" fill="#2E2F2C" />
         <rect x="109" y="145" width="36" height="6" rx="2" fill="#2E2F2C" />
-        <text x="132" y="224" textAnchor="middle" fontSize="18" fontWeight="600" fill="#141615">
+        <text x="132" y="224" textAnchor="middle" fontSize="18" fontWeight="600" fill="#142019">
           แม่ค้า
         </text>
       </g>
 
       {/* compost pen */}
       <g>
-        <path d="M414 190 V122 H548 V190" fill="none" stroke="#141615" strokeWidth="1.2" />
-        <path d="M402 122 L481 94 L560 122" fill="none" stroke="#141615" strokeWidth="1.2" />
-        <path d="M426 190 C 440 150, 520 150, 536 190 Z" fill="#D9CDB4" stroke="#141615" />
-        <line x1="452" y1="190" x2="452" y2="142" stroke="#8D9089" strokeDasharray="2 3" />
-        <line x1="510" y1="190" x2="510" y2="142" stroke="#8D9089" strokeDasharray="2 3" />
-        <text x="481" y="224" textAnchor="middle" fontSize="16" fontWeight="600" fill="#141615">
+        <path d="M414 190 V122 H548 V190" fill="none" stroke="#142019" strokeWidth="1.2" />
+        <path d="M402 122 L481 94 L560 122" fill="none" stroke="#142019" strokeWidth="1.2" />
+        <path d="M426 190 C 440 150, 520 150, 536 190 Z" fill="#D9CDB4" stroke="#142019" />
+        <line x1="452" y1="190" x2="452" y2="142" stroke="#87948C" strokeDasharray="2 3" />
+        <line x1="510" y1="190" x2="510" y2="142" stroke="#87948C" strokeDasharray="2 3" />
+        <text x="481" y="224" textAnchor="middle" fontSize="16" fontWeight="600" fill="#142019">
           คอกหมักของชุมชน
         </text>
       </g>
 
       {/* farmer: raised bed with seedlings */}
       <g {...party('farmer')}>
-        <path d="M758 190 L780 160 L882 160 L904 190 Z" fill="#8C735C" stroke="#141615" strokeWidth="1.2" />
+        <path d="M758 190 L780 160 L882 160 L904 190 Z" fill="#8C735C" stroke="#142019" strokeWidth="1.2" />
         {[798, 831, 864].map((x) => (
           <g key={x}>
-            <line x1={x} y1="160" x2={x} y2="128" stroke="#55603A" strokeWidth="1.6" />
+            <line x1={x} y1="160" x2={x} y2="128" stroke="#3E6B4A" strokeWidth="1.6" />
             <ellipse cx={x - 7} cy="136" rx="8" ry="4" fill="#7C8A55" transform={`rotate(-25 ${x - 7} 136)`} />
             <ellipse cx={x + 7} cy="128" rx="8" ry="4" fill="#7C8A55" transform={`rotate(25 ${x + 7} 128)`} />
           </g>
         ))}
-        <text x="831" y="224" textAnchor="middle" fontSize="18" fontWeight="600" fill="#141615">
+        <text x="831" y="224" textAnchor="middle" fontSize="18" fontWeight="600" fill="#142019">
           เกษตรกร
         </text>
       </g>
@@ -709,18 +708,18 @@ function ExchangeDiagram({ focus, setFocus }: { focus: Side; setFocus: (s: Side)
             <motion.path
               d={f.d}
               fill="none"
-              stroke={lit ? '#9A4A24' : '#8D9089'}
+              stroke={lit ? '#17694A' : '#87948C'}
               strokeWidth={lit ? 1.8 : 1.3}
               strokeDasharray="5 6"
               markerEnd={`url(#xa-${lit ? 'rust' : 'ink'})`}
               animate={{ strokeDashoffset: ['0', '-22'] }}
               transition={{ duration: 1.2, repeat: Infinity, ease: 'linear' }}
             />
-            <text x={f.lx} y={f.ly} textAnchor="middle" fontSize="15" fontWeight="500" fill={lit ? '#9A4A24' : '#141615'}>
+            <text x={f.lx} y={f.ly} textAnchor="middle" fontSize="15" fontWeight="500" fill={lit ? '#17694A' : '#142019'}>
               {f.text}
             </text>
             {f.sub ? (
-              <text x={f.lx} y={f.ly + 18} textAnchor="middle" fontSize="12.5" fill="#8D9089">
+              <text x={f.lx} y={f.ly + 18} textAnchor="middle" fontSize="12.5" fill="#87948C">
                 {f.sub}
               </text>
             ) : null}
@@ -735,37 +734,37 @@ function DistanceDiagram() {
   return (
     <svg viewBox="0 0 360 120" className="mt-3 h-auto w-full" role="img" aria-label="จุดหมักห่างบ้านอย่างน้อย 50 เมตร">
       {/* house */}
-      <path d="M30 88 V58 L58 36 L86 58 V88 Z" fill="#FFFFFF" stroke="#141615" strokeWidth="1.25" />
-      <rect x="50" y="68" width="16" height="20" fill="#FAF9F5" stroke="#141615" />
-      <text x="58" y="106" textAnchor="middle" fontSize="11" fill="#5B5F59">
+      <path d="M30 88 V58 L58 36 L86 58 V88 Z" fill="#FFFFFF" stroke="#142019" strokeWidth="1.25" />
+      <rect x="50" y="68" width="16" height="20" fill="#F4F7F5" stroke="#142019" />
+      <text x="58" y="106" textAnchor="middle" fontSize="11" fill="#4E5D54">
         บ้าน
       </text>
       {/* pen */}
-      <path d="M262 88 V60 H330 V88" fill="none" stroke="#141615" strokeWidth="1.25" />
-      <path d="M254 60 L296 44 L338 60" fill="none" stroke="#141615" strokeWidth="1.25" />
-      <rect x="270" y="70" width="52" height="18" fill="#D9CDB4" stroke="#141615" />
-      <text x="296" y="106" textAnchor="middle" fontSize="11" fill="#5B5F59">
+      <path d="M262 88 V60 H330 V88" fill="none" stroke="#142019" strokeWidth="1.25" />
+      <path d="M254 60 L296 44 L338 60" fill="none" stroke="#142019" strokeWidth="1.25" />
+      <rect x="270" y="70" width="52" height="18" fill="#D9CDB4" stroke="#142019" />
+      <text x="296" y="106" textAnchor="middle" fontSize="11" fill="#4E5D54">
         จุดหมัก
       </text>
       {/* ground */}
-      <line x1="10" y1="88" x2="350" y2="88" stroke="#141615" />
+      <line x1="10" y1="88" x2="350" y2="88" stroke="#142019" />
       {/* dimension line */}
-      <line x1="86" y1="20" x2="86" y2="32" stroke="#9A4A24" />
-      <line x1="262" y1="20" x2="262" y2="32" stroke="#9A4A24" />
+      <line x1="86" y1="20" x2="86" y2="32" stroke="#17694A" />
+      <line x1="262" y1="20" x2="262" y2="32" stroke="#17694A" />
       <motion.line
         x1="86"
         y1="26"
         x2="262"
         y2="26"
-        stroke="#9A4A24"
+        stroke="#17694A"
         strokeWidth="1.5"
         initial={{ pathLength: 0 }}
         whileInView={{ pathLength: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 1, ease: EASE }}
       />
-      <rect x="138" y="16" width="72" height="20" fill="#FAF9F5" />
-      <text x="174" y="27" textAnchor="middle" dominantBaseline="central" fontSize="13" fontWeight="600" fill="#9A4A24">
+      <rect x="138" y="16" width="72" height="20" fill="#F4F7F5" />
+      <text x="174" y="27" textAnchor="middle" dominantBaseline="central" fontSize="13" fontWeight="600" fill="#17694A">
         ≥ 50 ม.
       </text>
     </svg>

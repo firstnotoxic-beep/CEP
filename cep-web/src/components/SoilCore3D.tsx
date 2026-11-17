@@ -311,7 +311,7 @@ export default function SoilCore3D({ state, running }: { state: SoilState; runni
       camera={{ position: [2.7, 2.35, 4.9], fov: 34, near: 0.1, far: 100 }}
       gl={{ antialias: true }}
     >
-      <color attach="background" args={['#F6F5F0']} />
+      <color attach="background" args={['#F4F7F5']} />
       <hemisphereLight args={['#FFFFFF', '#DCD8CE', 0.9]} />
       <ambientLight intensity={0.35} />
       <directionalLight position={[4, 7, 5]} intensity={1.5} castShadow shadow-mapSize={[2048, 2048]} shadow-bias={-0.0004} />
@@ -346,10 +346,10 @@ export default function SoilCore3D({ state, running }: { state: SoilState; runni
         args={[20, 20]}
         cellSize={0.25}
         cellThickness={0.6}
-        cellColor="#E5E3DC"
+        cellColor="#E3E9E5"
         sectionSize={1}
         sectionThickness={1}
-        sectionColor="#D3D0C6"
+        sectionColor="#CDD6D0"
         fadeDistance={12}
         fadeStrength={1.5}
         infiniteGrid

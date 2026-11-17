@@ -23,17 +23,17 @@ html.lenis body {
     @apply font-sans;
   }
   body {
-    @apply font-sans antialiased bg-paper text-ink;
+    @apply font-sans antialiased bg-white text-ink;
   }
   ::selection {
-    @apply bg-rust-soft text-ink;
+    @apply bg-accent-soft text-ink;
   }
 }
 
 @layer components {
-  /* Latin-only labels (FIG. 01, SEC. 01, D1 ...) */
+  /* Small reference labels (FIG. 2.1, S1 ...): plain sans, no tracked caps */
   .mono-label {
-    @apply font-mono text-[11px] font-medium uppercase tracking-[0.16em];
+    @apply font-sans text-[12.5px] font-medium tracking-normal;
   }
   /* Thai labels: never letter-space Thai script */
   .th-label {

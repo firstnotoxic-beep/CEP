@@ -80,7 +80,7 @@ export default function AcademicPresenterBar({ scenes, active, onGo }: Props) {
   const progress = Math.min(1, elapsedSeconds / TALK_SECONDS);
 
   const iconBtn =
-    'grid h-7 place-items-center rounded-full px-2.5 text-[10.5px] tracking-[0.12em] text-stone-300 transition-colors hover:bg-white/10 hover:text-white';
+    'grid h-7 place-items-center rounded-full px-2.5 text-[10.5px] tracking-[0.12em] text-faint transition-colors hover:bg-white/10 hover:text-white';
 
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-4 z-50 flex justify-center font-mono text-[11px]">
@@ -93,7 +93,7 @@ export default function AcademicPresenterBar({ scenes, active, onGo }: Props) {
             exit={{ opacity: 0, y: 12, scale: 0.98 }}
             transition={{ duration: 0.25 }}
             title="คีย์ลัด: ← → · 1–5 · T เริ่ม/หยุด · R รีเซ็ต · H ซ่อน"
-            className="pointer-events-auto relative flex items-center gap-1 overflow-hidden rounded-full bg-stone-900/[0.88] px-2 py-1.5 text-stone-100 shadow-2xl ring-1 ring-white/10 backdrop-blur-xl"
+            className="pointer-events-auto relative flex items-center gap-1 overflow-hidden rounded-full bg-ink px-2 py-1.5 text-stone-100 shadow-2xl ring-1 ring-white/10 "
           >
             {/* scene navigation */}
             <div className="flex items-center">
@@ -105,13 +105,13 @@ export default function AcademicPresenterBar({ scenes, active, onGo }: Props) {
                   onClick={() => onGo(i)}
                   className={cx(
                     'relative h-7 w-9 rounded-full transition-colors',
-                    i === active ? 'text-stone-900' : 'text-stone-400 hover:text-white',
+                    i === active ? 'text-ink' : 'text-faint hover:text-white',
                   )}
                 >
                   {i === active ? (
                     <motion.span
                       layoutId="dock-scene"
-                      className="absolute inset-0 rounded-full bg-stone-100"
+                      className="absolute inset-0 rounded-full bg-paper"
                       transition={{ type: 'spring', stiffness: 420, damping: 36 }}
                     />
                   ) : null}
@@ -163,7 +163,7 @@ export default function AcademicPresenterBar({ scenes, active, onGo }: Props) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setVisible(true)}
-            className="pointer-events-auto rounded-full bg-stone-900/80 px-3.5 py-1.5 tracking-[0.12em] text-stone-200 shadow-lg backdrop-blur-xl hover:text-white"
+            className="pointer-events-auto rounded-full bg-ink px-3.5 py-1.5 tracking-[0.12em] text-stone-200 shadow-lg hover:text-white"
           >
             {scenes[active]?.code} / {String(scenes.length).padStart(2, '0')} · {display}
           </motion.button>

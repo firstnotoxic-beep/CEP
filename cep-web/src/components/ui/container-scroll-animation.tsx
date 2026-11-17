@@ -59,8 +59,8 @@ const ScrollCard = ({
       boxShadow:
         '0 1px 2px rgba(20,22,21,0.04), 0 12px 24px -8px rgba(20,22,21,0.08), 0 40px 80px -24px rgba(20,22,21,0.14)',
     }}
-    className="mx-auto mt-10 w-full max-w-6xl rounded-[28px] bg-white/80 p-2 ring-1 ring-stone-900/[0.06] backdrop-blur-md md:p-3"
+    className="mx-auto mt-10 w-full max-w-6xl rounded-[22px] bg-white p-2 ring-1 ring-rule md:p-3"
   >
-    <div className="h-full w-full overflow-hidden rounded-[20px] bg-paper ring-1 ring-stone-900/[0.04]">{children}</div>
+    <div className="h-full w-full overflow-hidden rounded-[16px] bg-white ring-1 ring-rule">{children}</div>
   </motion.div>
 );

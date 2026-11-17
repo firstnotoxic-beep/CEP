@@ -20,7 +20,7 @@ function SummaryTable() {
         <div className="mono-label text-faint">5.1</div>
         <h2 className="mt-2 text-2xl font-semibold">สรุป</h2>
       </Reveal>
-      <ol className="col-span-12 border-t border-stone-900/15 lg:col-span-9">
+      <ol className="col-span-12 border-t border-rule-strong lg:col-span-9">
         {SUMMARY.map((row, i) => (
           <motion.li
             key={row.code}
@@ -30,9 +30,8 @@ function SummaryTable() {
             transition={{ duration: 0.6, ease: EASE, delay: i * 0.08 }}
             className="grid grid-cols-12 gap-4 border-b border-rule py-5"
           >
-            <span className="col-span-2 font-mono text-[1.6rem] font-semibold leading-none text-rule-strong md:col-span-1">{row.code}</span>
-            <span className="col-span-10 text-[1.15rem] font-semibold md:col-span-3">{row.title}</span>
-            <span className="col-span-12 text-[16px] leading-[1.8] text-ink md:col-span-8">{row.text}</span>
+            <span className="col-span-12 text-[1.15rem] font-semibold md:col-span-3">{row.title}</span>
+            <span className="col-span-12 text-[16px] leading-[1.8] text-ink md:col-span-9">{row.text}</span>
           </motion.li>
         ))}
       </ol>
@@ -47,9 +46,9 @@ function TeamCredits() {
     <Reveal className="mt-20">
       <SpotlightCard className="px-8 py-14 lg:px-16">
         <div className="text-center">
-          <div className="mono-label text-faint">Research Team &amp; Advisor</div>
+          <div className="text-[13px] font-semibold text-accent">คณะผู้จัดทำและครูที่ปรึกษา</div>
           <h2 className="mx-auto mt-5 max-w-4xl text-balance text-[1.35rem] font-medium leading-[1.6] text-ink">{PROJECT.title}</h2>
-          <div className="mx-auto mt-8 h-px w-24 bg-rust/40" />
+          <div className="mx-auto mt-8 h-px w-24 bg-accent/40" />
         </div>
 
         <div className="mx-auto mt-10 grid max-w-5xl grid-cols-12 gap-10">
@@ -63,9 +62,8 @@ function TeamCredits() {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, ease: EASE, delay: 0.1 + i * 0.07 }}
-                  className="flex items-baseline gap-5 border-b border-stone-900/[0.06] py-3 last:border-b-0"
+                  className="flex items-baseline gap-5 border-b border-rule py-3 last:border-b-0"
                 >
-                  <span className="font-mono text-[11px] text-faint">{String(i + 1).padStart(2, '0')}</span>
                   <span className="text-[1.15rem]">{name}</span>
                 </motion.li>
               ))}
@@ -74,7 +72,7 @@ function TeamCredits() {
 
           <div className="col-span-12 flex flex-col md:col-span-5">
             <div className="th-label text-faint">ครูที่ปรึกษาโครงการ</div>
-            <div className="mt-4 border-y border-stone-900/15 py-4 text-[1.15rem]">{PROJECT.advisor}</div>
+            <div className="mt-4 border-y border-rule-strong py-4 text-[1.15rem]">{PROJECT.advisor}</div>
 
             <div className="th-label mt-10 text-faint">สถาบัน</div>
             <div className="mt-4 text-[1.05rem] leading-relaxed">{PROJECT.school}</div>

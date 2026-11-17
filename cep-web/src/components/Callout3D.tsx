@@ -47,13 +47,13 @@ export function Callout({ position, code, text, left = false }: { position: Vec3
             flexDirection: left ? 'row-reverse' : 'row',
           }}
         >
-          <span className="block h-2.5 w-2.5 shrink-0 rounded-full border-2 border-white bg-stone-900 shadow-sm" />
-          <span className="block h-px w-7 shrink-0 bg-stone-900/50" />
+          <span className="block h-2.5 w-2.5 shrink-0 rounded-full border-2 border-white bg-ink shadow-sm" />
+          <span className="block h-px w-7 shrink-0 bg-ink" />
           <span
             ref={boxRef}
-            className="flex items-baseline gap-2 whitespace-nowrap rounded-lg bg-white/95 px-2.5 py-1 shadow-[0_4px_14px_-6px_rgba(20,22,21,0.25)] ring-1 ring-stone-900/10"
+            className="flex items-baseline gap-2 whitespace-nowrap rounded-lg bg-white/95 px-2.5 py-1 shadow-[0_4px_14px_-6px_rgba(20,22,21,0.25)] ring-1 ring-rule-strong"
           >
-            <span className="font-mono text-[10px] font-semibold tracking-[0.12em] text-rust">{code}</span>
+            <span className="font-mono text-[10px] font-semibold tracking-[0.12em] text-accent">{code}</span>
             <span className="text-[12px] leading-tight text-ink">{text}</span>
           </span>
         </div>

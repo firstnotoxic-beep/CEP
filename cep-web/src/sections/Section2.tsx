@@ -70,9 +70,9 @@ function StepBlock({ step, index, active, onEnter }: {
 
   return (
     <div ref={ref} className="flex min-h-[88vh] items-center py-10">
-      <div className={cx('border-l-2 pl-6 transition-all duration-500', active ? 'border-rust opacity-100' : 'border-stone-200 opacity-45')}>
+      <div className={cx('border-l-2 pl-6 transition-all duration-500', active ? 'border-accent opacity-100' : 'border-rule-strong opacity-45')}>
         <div className="flex items-baseline gap-3">
-          <span className="mono-label text-rust">{step.fig}</span>
+          <span className="mono-label text-accent">{step.fig}</span>
           <span className="mono-label text-faint">
             {index + 1} / {SOLUTION_STEPS.length}
           </span>
@@ -89,7 +89,7 @@ function StepBlock({ step, index, active, onEnter }: {
           <ul className="mt-3 space-y-2.5">
             {step.science.map((s) => (
               <li key={s} className="flex gap-3 text-[15px] leading-relaxed text-muted">
-                <span className="mt-[11px] h-1 w-1 shrink-0 rounded-full bg-stone-400" />
+                <span className="mt-[11px] h-1 w-1 shrink-0 rounded-full bg-rule-strong" />
                 <span>{s}</span>
               </li>
             ))}
@@ -97,7 +97,7 @@ function StepBlock({ step, index, active, onEnter }: {
         </div>
 
         {step.note ? (
-          <div className="mt-6 rounded-xl bg-[#EEF0E6] px-4 py-3 ring-1 ring-olive/15">
+          <div className="mt-6 rounded-md bg-paper px-4 py-3 ring-1 ring-olive/15">
             <div className="th-label text-olive">ถ้าผลตรวจดินเป็นดินโซดิก</div>
             <p className="mt-1 text-[15px] leading-relaxed text-ink">{step.note}</p>
           </div>
@@ -105,7 +105,7 @@ function StepBlock({ step, index, active, onEnter }: {
 
         <div className="mt-6 flex flex-wrap gap-1.5">
           {step.specs.map((s) => (
-            <span key={s} className="rounded-full bg-stone-100 px-2.5 py-1 text-[12.5px] font-medium text-stone-700">
+            <span key={s} className="rounded-full bg-paper px-2.5 py-1 text-[12.5px] font-medium text-muted">
               {s}
             </span>
           ))}
@@ -138,7 +138,7 @@ function Stage({ model, exploded, onModel, onExplode }: {
         <Suspense
           fallback={
             <div className="grid h-full place-items-center">
-              <span className="mono-label text-faint">Loading 3D model</span>
+              <span className="mono-label text-faint">กำลังโหลดโมเดล 3D</span>
             </div>
           }
         >
@@ -160,7 +160,7 @@ function Stage({ model, exploded, onModel, onExplode }: {
           type="button"
           onClick={onExplode}
           aria-pressed={exploded}
-          className={cx('pointer-events-auto', exploded ? 'inline-flex items-center gap-2 rounded-full bg-rust px-3.5 py-1.5 text-[13px] font-medium text-white shadow-sm' : BTN_GHOST)}
+          className={cx('pointer-events-auto', exploded ? 'inline-flex items-center gap-2 rounded-full bg-accent px-3.5 py-1.5 text-[13px] font-medium text-white shadow-sm' : BTN_GHOST)}
         >
           {exploded ? 'รวมชั้นกลับ' : 'แยกชั้นให้ดู'}
         </button>
@@ -175,7 +175,7 @@ function Stage({ model, exploded, onModel, onExplode }: {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 6 }}
             transition={{ duration: 0.3, ease: EASE }}
-            className="rounded-xl bg-white/90 px-3 py-2 shadow-sm ring-1 ring-stone-900/[0.06] backdrop-blur"
+            className="rounded-md bg-white/90 px-3 py-2 shadow-sm ring-1 ring-rule "
           >
             {exploded ? (
               <span className="text-[12px] text-muted">ซ่อนอนุภาคไว้ก่อน จะได้เห็นแต่ละชั้นชัดๆ</span>
@@ -183,7 +183,7 @@ function Stage({ model, exploded, onModel, onExplode }: {
               <ul className="space-y-1">
                 {step.legend.map((l) => (
                   <li key={l.label} className="flex items-center gap-2 text-[12px] text-ink">
-                    <span className="h-2.5 w-2.5 rounded-full ring-1 ring-stone-900/20" style={{ background: l.color }} />
+                    <span className="h-2.5 w-2.5 rounded-full ring-1 ring-rule-strong" style={{ background: l.color }} />
                     {l.label}
                   </li>
                 ))}
@@ -205,9 +205,8 @@ function FitAndProcess() {
       <Reveal>
         <Figure code="FIG. 2.4" title="ทำไมแบบนี้ถึงเหมาะกับที่นี่">
           <ol className="grid gap-5 md:grid-cols-3">
-            {FIT_REASONS.map((r, i) => (
-              <li key={r} className="flex gap-4">
-                <span className="font-mono text-2xl font-semibold leading-none text-stone-300">{String(i + 1).padStart(2, '0')}</span>
+            {FIT_REASONS.map((r) => (
+              <li key={r} className="border-l-2 border-accent pl-4">
                 <span className="text-[15px] leading-relaxed">{r}</span>
               </li>
             ))}
@@ -240,7 +239,7 @@ function CoCreationTimeline() {
 
       <div className="relative">
         {/* rail + scroll-linked fill */}
-        <span className="absolute bottom-6 left-[19px] top-5 w-[2px] rounded-full bg-stone-200" aria-hidden="true" />
+        <span className="absolute bottom-6 left-[19px] top-5 w-[2px] rounded-full bg-rule" aria-hidden="true" />
         <motion.span
           aria-hidden="true"
           className="absolute bottom-6 left-[19px] top-5 w-[2px] origin-top rounded-full"
@@ -283,8 +282,8 @@ function TimelineStep({ index, step }: { index: number; step: CoCreationStep }) 
         viewport={{ once: true, amount: 0.5 }}
         transition={{ duration: 0.6, ease: EASE }}
         className={cx(
-          'grid gap-4 rounded-xl p-5 transition-colors duration-500 md:grid-cols-[1.4fr_1fr]',
-          reached ? 'bg-white shadow-[0_10px_30px_-16px_rgba(20,22,21,0.25)] ring-1 ring-stone-900/[0.07]' : 'bg-stone-50 ring-1 ring-stone-900/[0.04]',
+          'grid gap-4 rounded-md p-5 transition-colors duration-500 md:grid-cols-[1.4fr_1fr]',
+          reached ? 'bg-white shadow-[0_10px_30px_-16px_rgba(20,22,21,0.25)] ring-1 ring-rule' : 'bg-paper ring-1 ring-rule',
         )}
       >
         <div>
@@ -292,9 +291,9 @@ function TimelineStep({ index, step }: { index: number; step: CoCreationStep }) 
           <p className="mt-1.5 text-[15px] leading-[1.75] text-muted">{step.detail}</p>
         </div>
         <ul className="flex flex-wrap content-start gap-1.5">
-          <li className="rounded-full bg-stone-200/70 px-2.5 py-1 text-[12.5px] text-ink">คณะผู้จัดทำ</li>
+          <li className="rounded-full bg-rule px-2.5 py-1 text-[12.5px] text-ink">คณะผู้จัดทำ</li>
           {step.people.map((p) => (
-            <li key={p} className="rounded-full bg-white px-2.5 py-1 text-[12.5px] text-ink ring-1 ring-stone-900/10">
+            <li key={p} className="rounded-full bg-white px-2.5 py-1 text-[12.5px] text-ink ring-1 ring-rule-strong">
               {PEOPLE[p].name}
               <span className="ml-1 text-muted">· {PEOPLE[p].role}</span>
             </li>

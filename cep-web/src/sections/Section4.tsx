@@ -30,8 +30,7 @@ export default function Section4({ scene }: { scene: Scene }) {
 function KpiPanel() {
   return (
     <Figure code="FIG. 4.1" title="ตัวชี้วัด 5 ข้อ ที่จะเก็บค่าจริงในพื้นที่" note="ยังไม่มีผลการทดลอง" bodyClassName="px-6 pb-4 pt-3">
-      <div className="hidden grid-cols-[3.5rem_1.2fr_1.3fr_1.1fr_7rem] gap-4 border-b border-stone-900/10 pb-2 text-[12.5px] text-faint md:grid">
-        <span />
+      <div className="hidden grid-cols-[1.2fr_1.3fr_1.1fr_7rem] gap-4 border-b border-rule-strong pb-2 text-[12.5px] text-faint md:grid">
         <span>วัดอะไร</span>
         <span>เทียบกับอะไร</span>
         <span>ตอบโจทย์เรื่องไหน</span>
@@ -45,9 +44,8 @@ function KpiPanel() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.6 }}
             transition={{ duration: 0.5, ease: EASE, delay: 0.06 * i }}
-            className="grid gap-x-4 gap-y-1 border-b border-stone-900/[0.06] py-4 transition-colors last:border-b-0 hover:bg-stone-50/70 md:grid-cols-[3.5rem_1.2fr_1.3fr_1.1fr_7rem] md:items-baseline"
+            className="grid gap-x-4 gap-y-1 border-b border-rule py-4 transition-colors last:border-b-0 hover:bg-paper md:grid-cols-[1.2fr_1.3fr_1.1fr_7rem] md:items-baseline"
           >
-            <span className="font-mono text-[13px] text-rust">{String(i + 1).padStart(2, '0')}</span>
             <span className="text-[16px] font-semibold leading-snug text-ink">{k.name}</span>
             <span className="text-[14.5px] leading-relaxed text-muted">{k.compare}</span>
             <span className="text-[14.5px] leading-relaxed text-muted">{k.links}</span>
@@ -75,7 +73,7 @@ function HandoverModel() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, ease: EASE, delay: 0.1 + i * 0.08 }}
-            className="grid grid-cols-[9.5rem_1fr] gap-4 border-t border-stone-900/[0.07] py-3.5"
+            className="grid grid-cols-[9.5rem_1fr] gap-4 border-t border-rule py-3.5"
           >
             <span>
               <span className="block text-[16px] font-semibold text-ink">{PEOPLE[s.person].name}</span>
@@ -106,14 +104,14 @@ function FundingModel() {
       <div className="grid grid-cols-12 gap-4">
         {/* phases */}
         <ol className="col-span-12 space-y-3 sm:col-span-4">
-          <li className="rounded-xl bg-stone-50 p-4 ring-1 ring-stone-900/[0.05]">
-            <span className="mono-label text-faint">Phase A</span>
+          <li className="rounded-md bg-paper p-4 ring-1 ring-rule">
+            <span className="text-[13px] font-semibold text-faint">ระยะที่ 1</span>
             <div className="mt-1 text-[1.15rem] font-semibold">{FUNDING.phaseA.when}</div>
             <div className="mt-0.5 text-[15px] text-muted">{FUNDING.phaseA.what}</div>
           </li>
           <li className="text-center text-faint">↓</li>
-          <li className="rounded-xl bg-[#EEF0E6] p-4 ring-1 ring-olive/20">
-            <span className="mono-label text-olive">Phase B</span>
+          <li className="rounded-md bg-paper p-4 ring-1 ring-olive/20">
+            <span className="text-[13px] font-semibold text-accent">ระยะที่ 2</span>
             <div className="mt-1 text-[1.15rem] font-semibold">{FUNDING.phaseB.when}</div>
             <div className="mt-0.5 text-[15px] text-muted">{FUNDING.phaseB.what}</div>
           </li>
@@ -122,19 +120,16 @@ function FundingModel() {
         {/* revolving loop */}
         <div className="col-span-12 sm:col-span-8">
           <svg viewBox="0 0 360 262" className="h-auto w-full" role="img" aria-label="วงจรกองทุนหมุนเวียน">
-            <circle cx={C.x} cy={C.y} r={R} fill="none" stroke="#C9C6BC" strokeDasharray="4 5" />
+            <circle cx={C.x} cy={C.y} r={R} fill="none" stroke="#C7D2CA" strokeDasharray="4 5" />
             <g transform={`translate(${C.x} ${C.y})`}>
               <motion.g animate={{ rotate: 360 }} transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}>
                 {/* invisible ring keeps the group's box centred on the circle centre */}
                 <circle r={R + 5} fill="none" stroke="none" />
-                <circle cy={-R} r={5} fill="#55603A" />
+                <circle cy={-R} r={5} fill="#17694A" />
               </motion.g>
             </g>
-            <text x={C.x} y={C.y - 6} textAnchor="middle" fontSize="10" fontFamily="JetBrains Mono, monospace" fill="#8D9089">
-              REVOLVING
-            </text>
-            <text x={C.x} y={C.y + 12} textAnchor="middle" fontSize="14" fill="#141615">
-              หมุนเวียน
+            <text x={C.x} y={C.y + 5} textAnchor="middle" fontSize="14" fill="#142019">
+              เงินหมุนเวียน
             </text>
             {nodes.map((nd, i) => (
               <g key={nd.label}>
@@ -144,8 +139,8 @@ function FundingModel() {
                   width={124}
                   height={32}
                   rx={16}
-                  fill={i === 1 ? '#55603A' : '#FFFFFF'}
-                  stroke={i === 1 ? '#55603A' : 'rgba(20,22,21,0.18)'}
+                  fill={i === 1 ? '#17694A' : '#FFFFFF'}
+                  stroke={i === 1 ? '#17694A' : '#C7D2CA'}
                 />
                 <text
                   x={nd.x}
@@ -153,7 +148,7 @@ function FundingModel() {
                   textAnchor="middle"
                   dominantBaseline="central"
                   fontSize="13"
-                  fill={i === 1 ? '#FAF9F5' : '#141615'}
+                  fill={i === 1 ? '#F4F7F5' : '#142019'}
                 >
                   {nd.label}
                 </text>
