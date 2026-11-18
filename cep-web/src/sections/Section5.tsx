@@ -51,7 +51,7 @@ function TeamCredits() {
           <div className="mx-auto mt-8 h-px w-24 bg-accent/40" />
         </div>
 
-        <div className="mx-auto mt-10 grid max-w-5xl grid-cols-12 gap-10">
+        <div className="mx-auto mt-10 grid max-w-5xl grid-cols-12 gap-y-10 md:gap-x-10">
           <div className="col-span-12 md:col-span-7">
             <div className="th-label text-faint">คณะผู้จัดทำ</div>
             <ol className="mt-4">

@@ -43,9 +43,9 @@ function Hero() {
         className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[13px] text-muted"
       >
         <span>{PROJECT.program}</span>
-        <span className="h-1 w-1 rounded-full bg-rule-strong" />
+        <span className="hidden h-1 w-1 rounded-full bg-rule-strong md:block" />
         <span className="text-accent">{PROJECT.community}</span>
-        <span className="h-1 w-1 rounded-full bg-rule-strong" />
+        <span className="hidden h-1 w-1 rounded-full bg-rule-strong md:block" />
         <span>{PROJECT.school}</span>
       </motion.div>
 
@@ -65,11 +65,12 @@ function Hero() {
         transition={{ duration: 0.8, ease: EASE, delay: 0.25 }}
         className="mx-auto mt-8 max-w-4xl"
       >
-        <p className="text-[15.5px] leading-[1.9] text-ink">
+        {/* flex-wrap: each name stays whole, the row breaks between names on narrow screens */}
+        <p className="flex flex-wrap justify-center gap-x-1 text-[15.5px] leading-[1.9] text-ink">
           {PROJECT.team.map((name, i) => (
             <span key={name} className="whitespace-nowrap">
               {name}
-              {i < PROJECT.team.length - 1 ? <span className="mx-2.5 text-faint">·</span> : null}
+              {i < PROJECT.team.length - 1 ? <span className="mx-2 text-faint">·</span> : null}
             </span>
           ))}
         </p>
@@ -137,8 +138,10 @@ function SystemFlow() {
         <span className="text-[15px] font-semibold text-ink">ภาพรวมระบบ</span>
         <span className="mono-label text-faint">0 W · ไม่ใช้ไฟฟ้า</span>
       </div>
+      {/* on narrow screens the flow scrolls inside its card instead of widening the page */}
+      <div className="-mx-1 mt-6 overflow-x-auto overflow-y-hidden px-1 pb-1">
       <div
-        className="mt-6 grid h-[150px]"
+        className="grid h-[150px] min-w-[760px]"
         style={{ gridTemplateColumns: '1fr 28px 1fr 28px 1.1fr 28px 1.15fr 28px 1fr', gridTemplateRows: '1fr 1fr' }}
       >
         <div className="row-span-2 self-center" style={{ gridColumn: 1, gridRow: '1 / 3' }}>
@@ -177,6 +180,7 @@ function SystemFlow() {
         <div className="self-center" style={{ gridColumn: 9, gridRow: '1 / 3' }}>
           <FlowNode title="ชุดฟื้นฟูดินเค็ม" sub="ทดลองที่แปลงลุงชัย" tone="out" delay={0.32} />
         </div>
+      </div>
       </div>
       <p className="mt-4 text-[12.5px] leading-relaxed text-muted">
         ถ้าผลตรวจดินออกมาเป็นดินโซดิก จะใช้ยิปซัมเป็นตัวแก้หลัก ของจากเปลือกเป็นตัวเสริม
